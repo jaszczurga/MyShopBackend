@@ -24,22 +24,34 @@ public class ProductServiceImpl implements ProductService{
     @Override
     @Transactional
     public Product saveProduct(ProductToSave receivedProduct) {
+
+        //create product from received product
+        Product product = createProductFromDTO(receivedProduct);
+
+        //assign category to product with condition if category id is null if not null assign category to product
+        //if category id is null create new category and assign it to product
+        assignCategoryToProduct(receivedProduct, product);
+        return productRepository.save(product);
+    }
+
+    private Product createProductFromDTO(ProductToSave receivedProduct) {
         Product product = new Product();
         product.setProductName(receivedProduct.getProductName());
         product.setProductDescription(receivedProduct.getProductDescription());
         product.setProductPrice(receivedProduct.getProductPrice());
         product.setProductImage(receivedProduct.getProductImage());
+        product.setProductStockQuantity(receivedProduct.getProductStockQuantity());
+        return product;
+    }
 
-        //check if product category exists
-        if (productCategoryRepository.findById((long) receivedProduct.getCategory().getId()).isEmpty()) {
+    private void assignCategoryToProduct(ProductToSave receivedProduct, Product product) {
+        if (receivedProduct.getCategory().getId() == null) {
             ProductCategory productCategory = new ProductCategory();
             productCategory.setCategoryName(receivedProduct.getCategory().getCategoryName());
-            //productCategoryRepository.save(productCategory);
             product.setCategory(productCategory);
         } else {
             product.setCategory(productCategoryRepository.findById((long) receivedProduct.getCategory().getId()).get());
         }
-        return productRepository.save(product);
     }
 
 }
