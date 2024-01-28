@@ -7,7 +7,10 @@ import com.ecommerce.myshop.entity.Product;
 import com.ecommerce.myshop.entity.ProductCategory;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class ProductServiceImpl implements ProductService{
@@ -31,7 +34,22 @@ public class ProductServiceImpl implements ProductService{
         //assign category to product with condition if category id is null if not null assign category to product
         //if category id is null create new category and assign it to product
         assignCategoryToProduct(receivedProduct, product);
+
         return productRepository.save(product);
+    }
+
+    @Override
+    public ResponseEntity<String> deleteProduct(Long productId) {
+        Optional<Product> optionalProduct = productRepository.findById(productId);
+        productRepository.deleteById(productId);
+        return ResponseEntity.ok("Product " +optionalProduct.get().getProductName()+" deleted successfully");
+    }
+
+    @Override
+    public ResponseEntity<String> deleteCategory(Long categoryId) {
+        Optional<ProductCategory> optionalProductCategory = productCategoryRepository.findById(categoryId);
+        productCategoryRepository.deleteById(categoryId);
+        return ResponseEntity.ok("Category " +optionalProductCategory.get().getCategoryName()+" deleted successfully");
     }
 
     private Product createProductFromDTO(ProductToSave receivedProduct) {
