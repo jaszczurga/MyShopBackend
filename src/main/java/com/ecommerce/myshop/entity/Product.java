@@ -2,19 +2,19 @@ package com.ecommerce.myshop.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "product")
 @Data // Lombok annotation to generate getters, setters, constructors, toString, hash, equals, etc.
+@Getter
+@Setter
 public class Product {
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     @Column(name = "product_id")
     private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
-    private ProductCategory category;
 
     @Column(name = "name")
     private String productName;
@@ -27,4 +27,11 @@ public class Product {
 
     @Column(name = "stock_quantity")
     private int productStockQuantity;
+
+    @Column(name = "product_img")
+    private String productImage;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "category_id")
+    private ProductCategory category;
 }
