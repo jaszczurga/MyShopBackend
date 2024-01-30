@@ -2,6 +2,7 @@ package com.ecommerce.myshop.service;
 
 import com.ecommerce.myshop.dao.ProductCategoryRepository;
 import com.ecommerce.myshop.dao.ProductRepository;
+import com.ecommerce.myshop.dataTranferObject.CategoryToSave;
 import com.ecommerce.myshop.dataTranferObject.ProductToSave;
 import com.ecommerce.myshop.entity.Product;
 import com.ecommerce.myshop.entity.ProductCategory;
@@ -39,6 +40,15 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
+    @Transactional
+    public ProductCategory saveCategory(CategoryToSave receivedProduct) {
+        ProductCategory productCategory = new ProductCategory();
+        productCategory.setCategoryName(receivedProduct.getCategoryName());
+        return productCategoryRepository.save(productCategory);
+    }
+
+    @Override
+    @Transactional
     public ResponseEntity<String> deleteProduct(Long productId) {
         Optional<Product> optionalProduct = productRepository.findById(productId);
         productRepository.deleteById(productId);
@@ -46,10 +56,31 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
+    @Transactional
     public ResponseEntity<String> deleteCategory(Long categoryId) {
         Optional<ProductCategory> optionalProductCategory = productCategoryRepository.findById(categoryId);
         productCategoryRepository.deleteById(categoryId);
         return ResponseEntity.ok("Category " +optionalProductCategory.get().getCategoryName()+" deleted successfully");
+    }
+
+    @Override
+    @Transactional
+    public Product updateProduct(ProductToSave receivedProduct , Long productId) {
+        //update product from received product
+        Product product = createProductFromDTO(receivedProduct);
+        product.setId(productId);
+        product.setCategory( productCategoryRepository.findById((long) receivedProduct.getCategory().getId()).get() );
+        return productRepository.save(product);
+    }
+
+    @Override
+    @Transactional
+    public ProductCategory updateCategory(CategoryToSave receivedCategory , Long categoryId) {
+        //update category from received category
+        ProductCategory productCategory = new ProductCategory();
+        productCategory.setId(categoryId);
+        productCategory.setCategoryName(receivedCategory.getCategoryName());
+        return productCategoryRepository.save(productCategory);
     }
 
     private Product createProductFromDTO(ProductToSave receivedProduct) {
