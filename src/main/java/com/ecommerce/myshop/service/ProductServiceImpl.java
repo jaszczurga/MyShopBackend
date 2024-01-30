@@ -1,5 +1,7 @@
 package com.ecommerce.myshop.service;
 
+import com.ecommerce.myshop.Exceptions.CategoryNameExistsException;
+import com.ecommerce.myshop.Exceptions.NoCategoryIdFoundInDbException;
 import com.ecommerce.myshop.dao.ProductCategoryRepository;
 import com.ecommerce.myshop.dao.ProductRepository;
 import com.ecommerce.myshop.dataTranferObject.CategoryToSave;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -31,12 +34,16 @@ public class ProductServiceImpl implements ProductService{
 
         //create product from received product
         Product product = createProductFromDTO(receivedProduct);
-
-        //assign category to product with condition if category id is null if not null assign category to product
-        //if category id is null create new category and assign it to product
-        assignCategoryToProduct(receivedProduct, product);
-
-        return productRepository.save(product);
+        try{
+            //assign category to product with condition if category id is null if not null assign category to product
+            //if category id is null create new category and assign it to product
+            assignCategoryToProduct(receivedProduct, product);
+            return productRepository.save(product);
+        }catch (NoSuchElementException e){
+            throw new NoCategoryIdFoundInDbException( "Category id not found in database. Error message: " + e.getMessage());
+        }catch (Exception e){
+            throw new CategoryNameExistsException("Category name already exists. Error message: " + e.getMessage());
+        }
     }
 
     @Override
