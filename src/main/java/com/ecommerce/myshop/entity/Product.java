@@ -1,5 +1,6 @@
 package com.ecommerce.myshop.entity;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -7,7 +8,7 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "product")
-@Data // Lombok annotation to generate getters, setters, constructors, toString, hash, equals, etc.
+//@Data // Lombok annotation to generate getters, setters, constructors, toString, hash, equals, etc.
 @Getter
 @Setter
 public class Product {
@@ -30,6 +31,7 @@ public class Product {
 
     @Column(name = "product_img")
     private String productImage;
+
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "category_id")

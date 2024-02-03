@@ -14,12 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.CrossOrigin;
+
 import java.sql.SQLException;
 import java.sql.SQLDataException;
 import java.sql.SQLException;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-
+@CrossOrigin(origins = "http://localhost:4200")
 @Service
 public class ProductServiceImpl implements ProductService{
 
@@ -85,6 +87,7 @@ public class ProductServiceImpl implements ProductService{
             throw new NoSuchElementException("No such element found in database. Error message: " + e.getMessage());
         }
     }
+
 
     @Override
     @Transactional
