@@ -31,4 +31,10 @@ public interface ProductService {
     //method to get all categories from database
     Page<ProductCategory> getAllCategories(Pageable pageable);
 
+    //get products containing name
+    Page<Product> getProductsContainingName(String name, Pageable pageable);
+
+    //get products by category id
+    Page<Product> getProductsByCategoryId(Long categoryId, Pageable pageable);
+
 }

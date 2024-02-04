@@ -33,6 +33,18 @@ public class MyShopController {
         return productService.getAllCategories(pageable);
     }
 
+    //endpoint to get products containing name
+    @GetMapping ("/productsContainingName")
+    Page<Product> getProductsContainingName(@RequestParam String name, Pageable pageable) {
+        return productService.getProductsContainingName(name, pageable);
+    }
+
+    //endpoint to get products by category id
+    @GetMapping ("/productsByCategoryId")
+    Page<Product> getProductsByCategoryId(@RequestParam Long categoryId, Pageable pageable) {
+        return productService.getProductsByCategoryId(categoryId, pageable);
+    }
+
 
     //endpoint to save product
      @PostMapping ("/saveProduct")

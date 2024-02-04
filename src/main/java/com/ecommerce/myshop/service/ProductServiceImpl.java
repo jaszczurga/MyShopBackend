@@ -144,6 +144,16 @@ public class ProductServiceImpl implements ProductService{
         return productCategoryRepository.findAll(pageable);
     }
 
+    @Override
+    public Page<Product> getProductsContainingName(String name , Pageable pageable) {
+        return productRepository.findByProductNameContaining(name, pageable);
+    }
+
+    @Override
+    public Page<Product> getProductsByCategoryId(Long categoryId , Pageable pageable) {
+        return productRepository.findByCategoryId(categoryId, pageable);
+    }
+
 
     private Product createProductFromDTO(ProductDto receivedProduct) {
         Product product = new Product();
