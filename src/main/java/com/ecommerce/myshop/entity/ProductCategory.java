@@ -1,6 +1,8 @@
 package com.ecommerce.myshop.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,7 +24,8 @@ public class ProductCategory {
     @Column(name = "category_name")
     private String categoryName;
 
-    @JsonIgnore
+   // @JsonManagedReference
+    @JsonIgnoreProperties ("category")
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "category")
     private List<Product> products;
 

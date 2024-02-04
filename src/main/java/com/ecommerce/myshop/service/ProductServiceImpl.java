@@ -12,6 +12,8 @@ import jakarta.transaction.Transactional;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import java.sql.SQLException;
 import java.sql.SQLDataException;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 @CrossOrigin(origins = "http://localhost:4200")
@@ -136,6 +139,22 @@ public class ProductServiceImpl implements ProductService{
            // throw new CategoryNameExistsException("Category name already exists. Error message: " );
         //}
     }
+
+    @Override
+    public Page<Product> productsByCategory(String id , Pageable pageable) {
+        return productRepository.findByCategoryId(Long.parseLong(id), pageable);
+    }
+
+    @Override
+    public Page<Product> productsByName(String name , Pageable pageable) {
+        return productRepository.findByProductNameContaining(name, pageable);
+    }
+
+    @Override
+    public Page<ProductCategory> categoriesByName(String name , Pageable pageable) {
+        return productCategoryRepository.findByCategoryNameContaining(name, pageable);
+    }
+
 
     private Product createProductFromDTO(ProductToSave receivedProduct) {
         Product product = new Product();

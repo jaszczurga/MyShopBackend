@@ -5,8 +5,13 @@ import com.ecommerce.myshop.dataTranferObject.ProductToSave;
 import com.ecommerce.myshop.entity.Product;
 import com.ecommerce.myshop.entity.ProductCategory;
 import com.ecommerce.myshop.service.ProductService;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping ("/api/action")
@@ -54,5 +59,22 @@ public class MyShopController {
     public ProductCategory updateCategory(@RequestBody CategoryToSave receivedCategory, @PathVariable Long categoryId) {
           return productService.updateCategory(receivedCategory, categoryId);
     }
+
+    @GetMapping("productsByCategory/{id}")
+    public Page<Product> productsByCategory(@PathVariable String id, Pageable pageable){
+        return productService.productsByCategory(id, pageable);
+    }
+
+   @GetMapping("productsByName/{name}")
+    public Page<Product> productsByName(@PathVariable String name, Pageable pageable){
+        return productService.productsByName(name, pageable);
+    }
+
+    @GetMapping("categoryByName/{name}")
+    public Page<ProductCategory> categoriesByName(@PathVariable String name, Pageable pageable){
+        return productService.categoriesByName(name, pageable);
+    }
+
+
 
 }

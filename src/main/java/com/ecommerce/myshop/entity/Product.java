@@ -1,5 +1,6 @@
 package com.ecommerce.myshop.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -32,7 +33,7 @@ public class Product {
     @Column(name = "product_img")
     private String productImage;
 
-
+   // @JsonBackReference
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "category_id")
     private ProductCategory category;
