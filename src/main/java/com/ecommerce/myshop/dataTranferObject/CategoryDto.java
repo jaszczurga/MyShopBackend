@@ -3,6 +3,6 @@ package com.ecommerce.myshop.dataTranferObject;
 import lombok.Data;
 
 @Data
-public class CategoryToSave {
+public class CategoryDto {
     private String categoryName;
 }

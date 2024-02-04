@@ -1,5 +1,7 @@
 package com.ecommerce.myshop.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -33,6 +35,7 @@ public class Product {
     private String productImage;
 
 
+    @JsonIgnoreProperties("products")
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "category_id")
     private ProductCategory category;

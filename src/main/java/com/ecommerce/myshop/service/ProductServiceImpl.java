@@ -4,21 +4,18 @@ import com.ecommerce.myshop.Exceptions.CategoryNameExistsException;
 import com.ecommerce.myshop.Exceptions.NoCategoryIdFoundInDbException;
 import com.ecommerce.myshop.dao.ProductCategoryRepository;
 import com.ecommerce.myshop.dao.ProductRepository;
-import com.ecommerce.myshop.dataTranferObject.CategoryToSave;
-import com.ecommerce.myshop.dataTranferObject.ProductToSave;
+import com.ecommerce.myshop.dataTranferObject.CategoryDto;
+import com.ecommerce.myshop.dataTranferObject.ProductDto;
 import com.ecommerce.myshop.entity.Product;
 import com.ecommerce.myshop.entity.ProductCategory;
 import jakarta.transaction.Transactional;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
-import java.sql.SQLException;
-import java.sql.SQLDataException;
-import java.sql.SQLException;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 @CrossOrigin(origins = "http://localhost:4200")
@@ -36,7 +33,7 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     @Transactional
-    public Product saveProduct(ProductToSave receivedProduct) {
+    public Product saveProduct(ProductDto receivedProduct) {
 
         //create product from received product
         Product product = createProductFromDTO(receivedProduct);
@@ -54,7 +51,7 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     @Transactional
-    public ProductCategory saveCategory(CategoryToSave receivedProduct) {
+    public ProductCategory saveCategory(CategoryDto receivedProduct) {
         ProductCategory productCategory = new ProductCategory();
         try{
             productCategory.setCategoryName(receivedProduct.getCategoryName());
@@ -91,7 +88,7 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     @Transactional
-    public Product updateProduct(ProductToSave receivedProduct , Long productId) {
+    public Product updateProduct(ProductDto receivedProduct , Long productId) {
 
         Product product = new Product();
         ProductCategory productCategory = new ProductCategory();
@@ -119,7 +116,7 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     @Transactional
-    public ProductCategory updateCategory(CategoryToSave receivedCategory , Long categoryId) {
+    public ProductCategory updateCategory(CategoryDto receivedCategory , Long categoryId) {
 
         ProductCategory productCategory = new ProductCategory();
         productCategory = productCategoryRepository.findById(categoryId).get();
@@ -137,7 +134,18 @@ public class ProductServiceImpl implements ProductService{
         //}
     }
 
-    private Product createProductFromDTO(ProductToSave receivedProduct) {
+    @Override
+    public Page<Product> getAllProducts(Pageable pageable) {
+        return productRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<ProductCategory> getAllCategories(Pageable pageable) {
+        return productCategoryRepository.findAll(pageable);
+    }
+
+
+    private Product createProductFromDTO(ProductDto receivedProduct) {
         Product product = new Product();
         product.setProductName(receivedProduct.getProductName());
         product.setProductDescription(receivedProduct.getProductDescription());
@@ -147,7 +155,7 @@ public class ProductServiceImpl implements ProductService{
         return product;
     }
 
-    private void assignCategoryToProduct(ProductToSave receivedProduct, Product product) {
+    private void assignCategoryToProduct(ProductDto receivedProduct, Product product) {
         if (receivedProduct.getCategory().getId() == null) {
             ProductCategory productCategory = new ProductCategory();
             productCategory.setCategoryName(receivedProduct.getCategory().getCategoryName());

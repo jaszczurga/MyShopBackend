@@ -1,10 +1,12 @@
 package com.ecommerce.myshop.controller;
 
-import com.ecommerce.myshop.dataTranferObject.CategoryToSave;
-import com.ecommerce.myshop.dataTranferObject.ProductToSave;
+import com.ecommerce.myshop.dataTranferObject.CategoryDto;
+import com.ecommerce.myshop.dataTranferObject.ProductDto;
 import com.ecommerce.myshop.entity.Product;
 import com.ecommerce.myshop.entity.ProductCategory;
 import com.ecommerce.myshop.service.ProductService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,15 +21,28 @@ public class MyShopController {
         this.productService = productService;
     }
 
+    //endpoint to get all products
+    @GetMapping ("/products")
+    Page<Product> getAllProducts(Pageable pageable) {
+        return productService.getAllProducts(pageable);
+    }
+
+    //endpoint to get all categories
+    @GetMapping ("/categories")
+    Page<ProductCategory> getAllCategories(Pageable pageable) {
+        return productService.getAllCategories(pageable);
+    }
+
+
     //endpoint to save product
      @PostMapping ("/saveProduct")
-     public Product saveProduct(@RequestBody ProductToSave receivedProduct) {
+     public Product saveProduct(@RequestBody ProductDto receivedProduct) {
          return productService.saveProduct(receivedProduct);
      }
 
      //endpoint to save category
      @PostMapping ("/saveCategory")
-     public ProductCategory saveCategory(@RequestBody CategoryToSave receivedCategory) {
+     public ProductCategory saveCategory(@RequestBody CategoryDto receivedCategory) {
         return productService.saveCategory(receivedCategory);
     }
 
@@ -45,13 +60,13 @@ public class MyShopController {
 
     //endpoint to update product
     @PatchMapping ("/updateProduct/{productId}")
-    public Product updateProduct(@RequestBody ProductToSave receivedProduct, @PathVariable Long productId) {
+    public Product updateProduct(@RequestBody ProductDto receivedProduct, @PathVariable Long productId) {
           return productService.updateProduct(receivedProduct, productId);
     }
 
     //endpoint to update category
     @PatchMapping ("/updateCategory/{categoryId}")
-    public ProductCategory updateCategory(@RequestBody CategoryToSave receivedCategory, @PathVariable Long categoryId) {
+    public ProductCategory updateCategory(@RequestBody CategoryDto receivedCategory, @PathVariable Long categoryId) {
           return productService.updateCategory(receivedCategory, categoryId);
     }
 
