@@ -37,4 +37,7 @@ public interface ProductService {
     //get products by category id
     Page<Product> getProductsByCategoryId(Long categoryId, Pageable pageable);
 
+    //get product by id
+    Product getProductById(Long productId);
+
 }

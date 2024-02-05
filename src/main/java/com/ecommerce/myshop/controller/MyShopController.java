@@ -82,4 +82,10 @@ public class MyShopController {
           return productService.updateCategory(receivedCategory, categoryId);
     }
 
+    //endpoint to get product by id
+    @GetMapping ("/product/{productId}")
+    public Product getProductById(@PathVariable Long productId) {
+        return productService.getProductById(productId);
+    }
+
 }

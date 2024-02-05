@@ -154,6 +154,11 @@ public class ProductServiceImpl implements ProductService{
         return productRepository.findByCategoryId(categoryId, pageable);
     }
 
+    @Override
+    public Product getProductById(Long productId) {
+        return productRepository.findById(productId).get();
+    }
+
 
     private Product createProductFromDTO(ProductDto receivedProduct) {
         Product product = new Product();
