@@ -2,20 +2,24 @@ package com.ecommerce.myshop.service;
 
 import com.ecommerce.myshop.Exceptions.CategoryNameExistsException;
 import com.ecommerce.myshop.Exceptions.NoCategoryIdFoundInDbException;
+import com.ecommerce.myshop.dao.ImageRepository;
 import com.ecommerce.myshop.dao.ProductCategoryRepository;
 import com.ecommerce.myshop.dao.ProductRepository;
 import com.ecommerce.myshop.dataTranferObject.CategoryDto;
 import com.ecommerce.myshop.dataTranferObject.ProductDto;
+import com.ecommerce.myshop.entity.ImageModel;
 import com.ecommerce.myshop.entity.Product;
 import com.ecommerce.myshop.entity.ProductCategory;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
-
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.ResponseEntity.BodyBuilder;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 @CrossOrigin(origins = "http://localhost:4200")
@@ -25,10 +29,13 @@ public class ProductServiceImpl implements ProductService{
     private ProductRepository productRepository;
     private ProductCategoryRepository productCategoryRepository;
 
+    private ImageRepository imageRepository;
+
     @Autowired
-    public ProductServiceImpl(ProductRepository productRepository, ProductCategoryRepository productCategoryRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, ProductCategoryRepository productCategoryRepository, ImageRepository imageRepository) {
         this.productRepository = productRepository;
         this.productCategoryRepository = productCategoryRepository;
+        this.imageRepository = imageRepository;
     }
 
     @Override
@@ -157,6 +164,17 @@ public class ProductServiceImpl implements ProductService{
     @Override
     public Product getProductById(Long productId) {
         return productRepository.findById(productId).get();
+    }
+
+    @Override
+    public BodyBuilder saveImage(ImageModel imageModel) {
+        imageRepository.save(imageModel);
+        return ResponseEntity.status( HttpStatus.OK);
+    }
+
+    @Override
+    public Optional<ImageModel> getImageByName(String name) {
+        return imageRepository.findByName(name);
     }
 
 

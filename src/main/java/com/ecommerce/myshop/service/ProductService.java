@@ -2,11 +2,14 @@ package com.ecommerce.myshop.service;
 
 import com.ecommerce.myshop.dataTranferObject.CategoryDto;
 import com.ecommerce.myshop.dataTranferObject.ProductDto;
+import com.ecommerce.myshop.entity.ImageModel;
 import com.ecommerce.myshop.entity.Product;
 import com.ecommerce.myshop.entity.ProductCategory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+
+import java.util.Optional;
 
 public interface ProductService {
     //method to store product in database
@@ -39,5 +42,9 @@ public interface ProductService {
 
     //get product by id
     Product getProductById(Long productId);
+
+    ResponseEntity.BodyBuilder saveImage(ImageModel imageModel);
+
+    Optional<ImageModel> getImageByName(String name);
 
 }
