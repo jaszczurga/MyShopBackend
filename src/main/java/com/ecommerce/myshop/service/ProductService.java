@@ -16,10 +16,10 @@ public interface ProductService {
     ProductCategory saveCategory(CategoryDto receivedProduct);
 
     //method to delete product from database
-    ResponseEntity<String> deleteProduct(Long productId);
+    ResponseEntity<Product> deleteProduct(Long productId);
 
     //method to delete category from database
-    ResponseEntity<String> deleteCategory(Long categoryId);
+    ResponseEntity<ProductCategory> deleteCategory(Long categoryId);
 
     Product updateProduct(ProductDto receivedProduct, Long productId);
 

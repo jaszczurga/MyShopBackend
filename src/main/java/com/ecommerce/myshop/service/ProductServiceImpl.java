@@ -63,11 +63,11 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     @Transactional
-    public ResponseEntity<String> deleteProduct(Long productId) {
+    public ResponseEntity<Product> deleteProduct(Long productId) {
         try{
             Optional<Product> optionalProduct = productRepository.findById(productId);
             productRepository.deleteById(productId);
-            return ResponseEntity.ok("Product " +optionalProduct.get().getProductName()+" deleted successfully");
+            return ResponseEntity.ok(optionalProduct.get());
         }catch (Exception e){
             throw new NoSuchElementException("No such element found in database. Error message: " + e.getMessage());
         }
@@ -75,11 +75,11 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     @Transactional
-    public ResponseEntity<String> deleteCategory(Long categoryId) {
+    public ResponseEntity<ProductCategory> deleteCategory(Long categoryId) {
         try{
             Optional<ProductCategory> optionalProductCategory = productCategoryRepository.findById(categoryId);
             productCategoryRepository.deleteById(categoryId);
-            return ResponseEntity.ok("Category " +optionalProductCategory.get().getCategoryName()+" deleted successfully");
+            return ResponseEntity.ok(optionalProductCategory.get());
         }catch (Exception e){
             throw new NoSuchElementException("No such element found in database. Error message: " + e.getMessage());
         }

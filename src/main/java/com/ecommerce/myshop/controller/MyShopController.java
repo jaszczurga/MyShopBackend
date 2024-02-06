@@ -60,13 +60,13 @@ public class MyShopController {
 
      //endpoint to delete product
     @DeleteMapping ("/deleteProduct/{productId}")
-    public ResponseEntity<String> deleteProduct(@PathVariable Long productId) {
+    public ResponseEntity<Product> deleteProduct(@PathVariable Long productId) {
         return productService.deleteProduct(productId);
     }
 
     //endpoint to delete category
     @DeleteMapping ("/deleteCategory/{categoryId}")
-    public ResponseEntity<String> deleteCategory(@PathVariable Long categoryId) {
+    public ResponseEntity<ProductCategory> deleteCategory(@PathVariable Long categoryId) {
         return productService.deleteCategory(categoryId);
     }
 
