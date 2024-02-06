@@ -112,11 +112,15 @@ public class MyShopController {
     }
 
 
-    @PostMapping("/upload")
-    public void uplaodImage(@RequestParam("imageFile") MultipartFile file) throws IOException {
+    @PostMapping("/upload/{productId}")
+    public void uplaodImage(@RequestParam("imageFile") MultipartFile file,@PathVariable Long productId) throws IOException {
         System.out.println("Original Image Byte Size - " + file.getBytes().length);
-        ImageModel img = new ImageModel(file.getOriginalFilename(), file.getContentType(),
-                compressBytes(file.getBytes()));
+        ImageModel img = new ImageModel(
+                file.getOriginalFilename(),
+                file.getContentType(),
+                compressBytes(file.getBytes()),
+                productId
+        );
         productService.saveImage(img);
         //return ResponseEntity.status(HttpStatus.OK);
     }
@@ -124,8 +128,12 @@ public class MyShopController {
     @GetMapping(path = { "/get/{imageName}" })
     public ImageModel getImage(@PathVariable("imageName") String imageName) throws IOException {
         final Optional<ImageModel> retrievedImage = productService.getImageByName(imageName);
-        ImageModel img = new ImageModel(retrievedImage.get().getName(), retrievedImage.get().getType(),
-                decompressBytes(retrievedImage.get().getPicByte()));
+        ImageModel img = new ImageModel(
+                retrievedImage.get().getName(),
+                retrievedImage.get().getType(),
+                decompressBytes(retrievedImage.get().getPicByte()),
+                retrievedImage.get().getProductId()
+        );
         return img;
     }
 

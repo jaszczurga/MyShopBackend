@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Table(name = "product")
 //@Data // Lombok annotation to generate getters, setters, constructors, toString, hash, equals, etc.
@@ -31,12 +33,16 @@ public class Product {
     @Column(name = "stock_quantity")
     private int productStockQuantity;
 
-    @Column(name = "product_img")
-    private String productImage;
+//    @Column(name = "product_img")
+//    private String productImage;
 
 
     @JsonIgnoreProperties("products")
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "category_id")
     private ProductCategory category;
+
+    @OneToMany
+    @JoinColumn(name = "product_id")
+    private List<ImageModel> images;
 }
