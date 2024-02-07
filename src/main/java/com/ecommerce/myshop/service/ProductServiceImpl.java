@@ -191,6 +191,17 @@ public class ProductServiceImpl implements ProductService{
         return imageDtoPage;
     }
 
+    @Override
+    public ResponseEntity<ImageModel> deleteImage(Long imageId) {
+        try{
+            Optional<ImageModel> optionalImageModel = imageRepository.findById(imageId);
+            imageRepository.deleteById(imageId);
+            return ResponseEntity.ok(optionalImageModel.get());
+        }catch (Exception e){
+            throw new NoSuchElementException("No such element found in database. Error message: " + e.getMessage());
+        }
+    }
+
 //    @Override
 //    public BodyBuilder saveImage(ImageModel imageModel) {
 //        imageRepository.save(imageModel);

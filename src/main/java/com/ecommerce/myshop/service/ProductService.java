@@ -46,4 +46,7 @@ public interface ProductService {
 
    Page<ImageDto> getImagesByProductId(Long imageId,Pageable pageable);
 
+   //method to delete image by its id
+    ResponseEntity<ImageModel> deleteImage(Long imageId);
+
 }

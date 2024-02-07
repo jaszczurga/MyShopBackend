@@ -118,6 +118,12 @@ public class MyShopController {
             return productService.getImagesByProductId(productId, pageable);
     }
 
+    //endpoint to delete image by id
+    @DeleteMapping ("/deleteImage/{imageId}")
+    public ResponseEntity<ImageModel> deleteImage(@PathVariable Long imageId) {
+        return productService.deleteImage(imageId);
+    }
+
 
 //    @PostMapping("/upload/{productId}")
 //    public void uplaodImage(@RequestParam("imageFile") MultipartFile file,@PathVariable Long productId) throws IOException {
