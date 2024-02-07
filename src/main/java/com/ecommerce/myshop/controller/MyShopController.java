@@ -1,6 +1,7 @@
 package com.ecommerce.myshop.controller;
 
 import com.ecommerce.myshop.dataTranferObject.CategoryDto;
+import com.ecommerce.myshop.dataTranferObject.ImageDto;
 import com.ecommerce.myshop.dataTranferObject.ProductDto;
 import com.ecommerce.myshop.entity.ImageModel;
 import com.ecommerce.myshop.entity.Product;
@@ -111,19 +112,25 @@ public class MyShopController {
         return productService.getProductById(productId);
     }
 
-
-    @PostMapping("/upload/{productId}")
-    public void uplaodImage(@RequestParam("imageFile") MultipartFile file,@PathVariable Long productId) throws IOException {
-        System.out.println("Original Image Byte Size - " + file.getBytes().length);
-        ImageModel img = new ImageModel(
-                file.getOriginalFilename(),
-                file.getContentType(),
-                compressBytes(file.getBytes()),
-                productId
-        );
-        productService.saveImage(img);
-        //return ResponseEntity.status(HttpStatus.OK);
+    //endpoint to get image by id
+    @GetMapping ("/image/{productId}")
+    public Page<ImageDto> getImagesByProductId(@PathVariable Long productId, Pageable pageable) {
+            return productService.getImagesByProductId(productId, pageable);
     }
+
+
+//    @PostMapping("/upload/{productId}")
+//    public void uplaodImage(@RequestParam("imageFile") MultipartFile file,@PathVariable Long productId) throws IOException {
+//        System.out.println("Original Image Byte Size - " + file.getBytes().length);
+//        ImageModel img = new ImageModel(
+//                file.getOriginalFilename(),
+//                file.getContentType(),
+//                compressBytes(file.getBytes()),
+//                productId
+//        );
+//        productService.saveImage(img);
+//        //return ResponseEntity.status(HttpStatus.OK);
+//    }
 
 //    @GetMapping(path = { "/get/{imageName}" })
 //    public ImageModel getImage(@PathVariable("imageName") String imageName) throws IOException {

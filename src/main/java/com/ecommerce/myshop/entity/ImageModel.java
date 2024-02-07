@@ -29,6 +29,7 @@ public class ImageModel {
     //image bytes can have large lengths so we specify a value
     //which is more than the default length for picByte column
 
+
     @Column(name = "pic_byte", length = 1000)
     private byte[] picByte;
 

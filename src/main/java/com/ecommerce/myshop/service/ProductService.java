@@ -1,6 +1,7 @@
 package com.ecommerce.myshop.service;
 
 import com.ecommerce.myshop.dataTranferObject.CategoryDto;
+import com.ecommerce.myshop.dataTranferObject.ImageDto;
 import com.ecommerce.myshop.dataTranferObject.ProductDto;
 import com.ecommerce.myshop.entity.ImageModel;
 import com.ecommerce.myshop.entity.Product;
@@ -43,8 +44,6 @@ public interface ProductService {
     //get product by id
     Product getProductById(Long productId);
 
-    ResponseEntity.BodyBuilder saveImage(ImageModel imageModel);
-
-    Optional<ImageModel> getImageByName(String name);
+   Page<ImageDto> getImagesByProductId(Long imageId,Pageable pageable);
 
 }

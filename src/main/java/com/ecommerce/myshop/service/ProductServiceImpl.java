@@ -6,6 +6,7 @@ import com.ecommerce.myshop.dao.ImageRepository;
 import com.ecommerce.myshop.dao.ProductCategoryRepository;
 import com.ecommerce.myshop.dao.ProductRepository;
 import com.ecommerce.myshop.dataTranferObject.CategoryDto;
+import com.ecommerce.myshop.dataTranferObject.ImageDto;
 import com.ecommerce.myshop.dataTranferObject.ProductDto;
 import com.ecommerce.myshop.entity.ImageModel;
 import com.ecommerce.myshop.entity.Product;
@@ -49,14 +50,7 @@ public class ProductServiceImpl implements ProductService{
             //assign category to product with condition if category id is null if not null assign category to product
             //if category id is null create new category and assign it to product
             assignCategoryToProduct(receivedProduct, product);
-//            //save images to product with loop and method from entity
-//            for (ImageModel image : receivedProduct.getImages()) {
-//                ImageModel  imageToSave = new ImageModel();
-//                imageToSave.setName(image.getName());
-//                imageToSave.setType(image.getType());
-//                imageToSave.setPicByte(image.getPicByte());
-//                product.addImage(imageToSave);
-//            }
+
             Product product1=  productRepository.save(product);
             product.getImages().forEach(image -> image.setProduct(product1));
 
@@ -126,6 +120,7 @@ public class ProductServiceImpl implements ProductService{
             throw new NoSuchElementException("No such a category element found in database. Error message: " + e.getMessage());
         }
 
+
         //update product from received product
         product = createProductFromDTO(receivedProduct);
         product.setId(productId);
@@ -178,16 +173,34 @@ public class ProductServiceImpl implements ProductService{
         return productRepository.findById(productId).get();
     }
 
-    @Override
-    public BodyBuilder saveImage(ImageModel imageModel) {
-        imageRepository.save(imageModel);
-        return ResponseEntity.status( HttpStatus.OK);
-    }
 
     @Override
-    public Optional<ImageModel> getImageByName(String name) {
-        return imageRepository.findByName(name);
+    public Page<ImageDto> getImagesByProductId(Long productId, Pageable pageable) {
+
+        Page<ImageModel> imageModel = imageRepository.findByProductId(productId, pageable);
+        //create imageDto
+        Page<ImageDto> imageDtoPage = imageModel.map(image -> {
+            ImageDto imageDto = new ImageDto();
+            imageDto.setId(image.getId());
+            imageDto.setName(image.getName());
+            imageDto.setType(image.getType());
+            imageDto.setPicByte(image.getPicByte());
+            return imageDto;
+        });
+
+        return imageDtoPage;
     }
+
+//    @Override
+//    public BodyBuilder saveImage(ImageModel imageModel) {
+//        imageRepository.save(imageModel);
+//        return ResponseEntity.status( HttpStatus.OK);
+//    }
+//
+//    @Override
+//    public Optional<ImageModel> getImageByName(String name) {
+//        return imageRepository.findByName(name);
+//    }
 
 
     private Product createProductFromDTO(ProductDto receivedProduct) {
