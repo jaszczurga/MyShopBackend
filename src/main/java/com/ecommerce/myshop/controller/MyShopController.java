@@ -125,17 +125,17 @@ public class MyShopController {
         //return ResponseEntity.status(HttpStatus.OK);
     }
 
-    @GetMapping(path = { "/get/{imageName}" })
-    public ImageModel getImage(@PathVariable("imageName") String imageName) throws IOException {
-        final Optional<ImageModel> retrievedImage = productService.getImageByName(imageName);
-        ImageModel img = new ImageModel(
-                retrievedImage.get().getName(),
-                retrievedImage.get().getType(),
-                decompressBytes(retrievedImage.get().getPicByte()),
-                retrievedImage.get().getProductId()
-        );
-        return img;
-    }
+//    @GetMapping(path = { "/get/{imageName}" })
+//    public ImageModel getImage(@PathVariable("imageName") String imageName) throws IOException {
+//        final Optional<ImageModel> retrievedImage = productService.getImageByName(imageName);
+//        ImageModel img = new ImageModel(
+//                retrievedImage.get().getName(),
+//                retrievedImage.get().getType(),
+//                decompressBytes(retrievedImage.get().getPicByte())
+//                retrievedImage.get().getProductId()
+//        );
+//        return img;
+//    }
 
 
     public static byte[] compressBytes(byte[] data) {

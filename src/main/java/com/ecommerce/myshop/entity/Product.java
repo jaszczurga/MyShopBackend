@@ -8,7 +8,10 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "product")
@@ -17,32 +20,45 @@ import java.util.List;
 @Setter
 public class Product {
     @Id
-    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
-    @Column(name = "product_id")
+    @GeneratedValue (strategy = jakarta.persistence.GenerationType.IDENTITY)
+    @Column (name = "product_id")
     private Long id;
 
-    @Column(name = "name")
+    @Column (name = "name")
     private String productName;
 
-    @Column(name = "description")
+    @Column (name = "description")
     private String productDescription;
 
-    @Column(name = "price")
+    @Column (name = "price")
     private double productPrice;
 
-    @Column(name = "stock_quantity")
+    @Column (name = "stock_quantity")
     private int productStockQuantity;
 
 //    @Column(name = "product_img")
 //    private String productImage;
 
 
-    @JsonIgnoreProperties("products")
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
-    @JoinColumn(name = "category_id")
+    @JsonIgnoreProperties ("products")
+    @ManyToOne (cascade = {CascadeType.PERSIST , CascadeType.MERGE , CascadeType.REFRESH})
+    @JoinColumn (name = "category_id")
     private ProductCategory category;
 
-    @OneToMany
-    @JoinColumn(name = "product_id")
+    @OneToMany (cascade = CascadeType.ALL, mappedBy = "product")
     private List<ImageModel> images;
+
+
+    //metohd to add image to product
+    public void addImage(ImageModel imageModel) {
+
+        if (images != null) {
+            if (images == null) {
+                images = new ArrayList<>();
+            }
+            imageModel.setProduct( this );
+            images.add( imageModel );
+
+        }
+    }
 }

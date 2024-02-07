@@ -44,10 +44,22 @@ public class ProductServiceImpl implements ProductService{
 
         //create product from received product
         Product product = createProductFromDTO(receivedProduct);
+
         try{
             //assign category to product with condition if category id is null if not null assign category to product
             //if category id is null create new category and assign it to product
             assignCategoryToProduct(receivedProduct, product);
+//            //save images to product with loop and method from entity
+//            for (ImageModel image : receivedProduct.getImages()) {
+//                ImageModel  imageToSave = new ImageModel();
+//                imageToSave.setName(image.getName());
+//                imageToSave.setType(image.getType());
+//                imageToSave.setPicByte(image.getPicByte());
+//                product.addImage(imageToSave);
+//            }
+            Product product1=  productRepository.save(product);
+            product.getImages().forEach(image -> image.setProduct(product1));
+
             return productRepository.save(product);
         }catch (NoSuchElementException e){
             throw new NoCategoryIdFoundInDbException( "Category id not found in database. Error message: " + e.getMessage());
@@ -183,8 +195,9 @@ public class ProductServiceImpl implements ProductService{
         product.setProductName(receivedProduct.getProductName());
         product.setProductDescription(receivedProduct.getProductDescription());
         product.setProductPrice(receivedProduct.getProductPrice());
-        product.setProductImage(receivedProduct.getProductImage());
+        product.setImages( receivedProduct.getImages() );
         product.setProductStockQuantity(receivedProduct.getProductStockQuantity());
+
         return product;
     }
 
