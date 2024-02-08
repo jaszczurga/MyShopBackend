@@ -61,4 +61,15 @@ public class Product {
 
         }
     }
+
+    public void setMainImage(ImageModel imageModel) {
+        //if images list is not empty then set image with choosen id to be first in list
+        if (images != null) {
+            if (images == null) {
+                images = new ArrayList<>();
+            }
+            images.remove( imageModel );
+            images.add( 0, imageModel );
+        }
+    }
 }

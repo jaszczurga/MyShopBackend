@@ -49,4 +49,5 @@ public interface ProductService {
    //method to delete image by its id
     ResponseEntity<ImageModel> deleteImage(Long imageId);
 
+
 }
