@@ -1,5 +1,6 @@
 package com.ecommerce.myshop.entity.Checkout;
 
+import com.ecommerce.myshop.entity.Product;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +14,7 @@ import java.math.BigDecimal;
 public class OrderItem {
     @Id
     @GeneratedValue (strategy = jakarta.persistence.GenerationType.IDENTITY)
-    @Column (name = "id")
+    @Column (name = "order_item_id")
     private Long id;
 
     @Column (name = "price")
@@ -22,8 +23,9 @@ public class OrderItem {
     @Column (name = "quantity")
     private int quantity;
 
-    @Column (name = "product_id")
-    private Long productId;
+    @OneToOne
+    @JoinColumn (name = "product_id")
+    private Product product;
 
     @ManyToOne
     @JoinColumn (name = "order_id")

@@ -9,14 +9,14 @@ import java.util.Set;
 
 
 @Entity
-@Table (name = "customer")
+@Table (name = "customers")
 @Getter // Lombok annotation to generate getters
 @Setter // Lombok annotation to generate setters
 public class Customer {
 
     @Id
     @GeneratedValue (strategy = jakarta.persistence.GenerationType.IDENTITY)
-    @Column (name = "id")
+    @Column (name = "customer_id")
     private Long id;
 
     @Column (name = "first_name")

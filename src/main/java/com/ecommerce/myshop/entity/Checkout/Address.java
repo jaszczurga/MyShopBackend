@@ -12,7 +12,7 @@ import lombok.Setter;
 public class Address {
     @Id
     @GeneratedValue (strategy = jakarta.persistence.GenerationType.IDENTITY)
-    @Column (name = "id")
+    @Column (name = "address_id")
     private Long id;
 
     @Column (name = "street")
@@ -30,7 +30,7 @@ public class Address {
     @Column (name = "zip_code")
     private String zipCode;
 
-    @OneToOne (mappedBy = "shippingAddress")
+    @OneToOne (mappedBy = "orderAddress")
     @PrimaryKeyJoinColumn
     private Order order;
 }

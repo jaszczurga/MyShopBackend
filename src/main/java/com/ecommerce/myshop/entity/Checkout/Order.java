@@ -17,7 +17,7 @@ import java.util.Set;
 public class Order {
     @Id
     @GeneratedValue (strategy = jakarta.persistence.GenerationType.IDENTITY)
-    @Column (name = "id")
+    @Column (name = "order_id")
     private Long id;
 
     @Column (name = "order_tracking_number")
@@ -32,11 +32,11 @@ public class Order {
     @Column (name = "status")
     private String status;
 
-    @Column (name = "date_created")
+    @Column (name = "date_create")
     @CreationTimestamp
     private String dateCreated;
 
-    @Column (name = "last_updated")
+    @Column (name = "date_update")
     @UpdateTimestamp
     private String lastUpdated;
 
@@ -49,7 +49,7 @@ public class Order {
     private Customer customer;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn (name = "order_address", referencedColumnName = "id")
+    @JoinColumn (name = "order_address", referencedColumnName = "address_id")
     private Address orderAddress;
 
 
