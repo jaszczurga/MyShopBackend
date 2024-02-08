@@ -123,8 +123,12 @@ public class ProductServiceImpl implements ProductService{
 
         //update product from received product
         product = createProductFromDTO(receivedProduct);
-        product.setId(productId);
         product.setCategory( productCategory );
+        product.setId(productId);
+
+        Product finalProduct = product;
+        receivedProduct.getImages().forEach( image -> image.setProduct( finalProduct ));
+        product.setImages( receivedProduct.getImages() );
         return productRepository.save(product);
     }
 
