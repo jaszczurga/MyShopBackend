@@ -13,11 +13,18 @@ public class MyAppConfig implements WebMvcConfigurer {
     @Value( "${spring.data.rest.base-path}" )
     private String basePath;
 
-    @Override
-    public void addCorsMappings(CorsRegistry cors) {
 
-        // set up cors mapping
-        cors.addMapping( basePath + "/**" ).allowedOrigins( theAllowedOrigins );
+
+        @Override
+        public void addCorsMappings(CorsRegistry registry) {
+            registry.addMapping("/**")
+                    .allowedOrigins("http://localhost:4200") // Angular app's origin
+                    .allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS")
+                    .allowedHeaders("*")
+                    .allowCredentials(true);
 
     }
 }
+
+
+
