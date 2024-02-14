@@ -5,13 +5,20 @@ import com.ecommerce.myshop.dao.Authentication.UserRepository;
 import com.ecommerce.myshop.dataTranferObject.Authentication.AuthenticationRequest;
 import com.ecommerce.myshop.dataTranferObject.Authentication.AuthenticationResponse;
 import com.ecommerce.myshop.dataTranferObject.Authentication.RegisterRequest;
+import com.ecommerce.myshop.dataTranferObject.Authentication.UserAuthoritiesDto;
 import com.ecommerce.myshop.entity.Authentication.Role;
 import com.ecommerce.myshop.entity.Authentication.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.GrantedAuthority;
+
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -55,4 +62,19 @@ public class AuthenticationService {
                 .token(jwtToken)
                 .build();
     }
+
+
+    public UserAuthoritiesDto getRoles() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String roles =  authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect( Collectors.joining(","));
+        return UserAuthoritiesDto
+                .builder()
+                .rolesString( roles )
+                .build();
+    }
+
+
+
 }

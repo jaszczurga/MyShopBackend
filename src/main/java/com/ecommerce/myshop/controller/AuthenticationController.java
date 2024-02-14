@@ -3,6 +3,7 @@ package com.ecommerce.myshop.controller;
 import com.ecommerce.myshop.dataTranferObject.Authentication.AuthenticationRequest;
 import com.ecommerce.myshop.dataTranferObject.Authentication.AuthenticationResponse;
 import com.ecommerce.myshop.dataTranferObject.Authentication.RegisterRequest;
+import com.ecommerce.myshop.dataTranferObject.Authentication.UserAuthoritiesDto;
 import com.ecommerce.myshop.service.Authentication.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,5 +26,10 @@ public class AuthenticationController {
     public ResponseEntity<AuthenticationResponse> register(
             @RequestBody AuthenticationRequest request) {
         return ResponseEntity.ok(authenticationService.authenticate(request));
+    }
+
+    @GetMapping("/roles")
+    public ResponseEntity<UserAuthoritiesDto> getRoles() {
+        return ResponseEntity.ok(authenticationService.getRoles());
     }
 }
