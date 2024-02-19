@@ -1,20 +1,29 @@
 package com.ecommerce.myshop.dataTranferObject.OrderDto;
 
 import com.ecommerce.myshop.dataTranferObject.OrderDto.fieldsDtos.OrderCustomerDto;
-import com.ecommerce.myshop.dataTranferObject.OrderDto.fieldsDtos.OrderOrderItemDto;
+import com.ecommerce.myshop.dataTranferObject.OrderDto.fieldsDtos.OrderItemDto;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-public class OrderListDto{
+import java.math.BigDecimal;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class OrderDto{
 
     private Long id;
     private String orderTrackingNumber;
     private int totalQuantity;
-    private String totalPrice;
+    private BigDecimal totalPrice;
     private String status;
     private String dateCreated;
     private String lastUpdated;
 
     //it consists customer details such as address also
     private OrderCustomerDto customer;
-    private OrderOrderItemDto[] orderItems;
+    private OrderItemDto[] orderItems;
 
 }

@@ -37,7 +37,7 @@ public class AuthenticationService {
                 .lastName( request.getLastName() )
                 .email( request.getEmail() )
                 .password( passwordEncoder.encode(request.getPassword()) )
-                .role( Role.USER )
+                .role( Role.ADMIN )
                 .build();
         userRepository.save(user);
         var jwtToken = jwtService.generateToken(user);
@@ -76,5 +76,8 @@ public class AuthenticationService {
     }
 
 
-
+    public String getAuthenticatedUserEmail() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    return authentication.getName();
+}
 }

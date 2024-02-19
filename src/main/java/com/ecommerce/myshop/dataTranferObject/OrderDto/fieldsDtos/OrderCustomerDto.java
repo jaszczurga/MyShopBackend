@@ -13,7 +13,7 @@ public class OrderCustomerDto {
     private String lastName;
     private String email;
     private String phoneNumber;
-    private String address;
+    private String street;
     private String city;
     private String country;
     private String zipCode;
