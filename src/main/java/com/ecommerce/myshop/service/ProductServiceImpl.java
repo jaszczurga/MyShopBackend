@@ -74,29 +74,27 @@ public class ProductServiceImpl implements ProductService{
         }
     }
 
-    @Override
-    @Transactional
-    public ResponseEntity<Product> deleteProduct(Long productId) {
-        try{
-            Optional<Product> optionalProduct = productRepository.findById(productId);
-            productRepository.deleteById(productId);
-            return ResponseEntity.ok(optionalProduct.get());
-        }catch (Exception e){
-            throw new NoSuchElementException("No such element found in database. Error message: " + e.getMessage());
-        }
+ @Override
+@Transactional
+public ResponseEntity<Product> deleteProduct(Long productId) {
+    Optional<Product> optionalProduct = productRepository.findById(productId);
+    if (!optionalProduct.isPresent()) {
+        throw new NoSuchElementException("No such element found in database.");
     }
+    productRepository.deleteById(productId);
+    return ResponseEntity.ok(optionalProduct.get());
+}
 
-    @Override
-    @Transactional
-    public ResponseEntity<ProductCategory> deleteCategory(Long categoryId) {
-        try{
-            Optional<ProductCategory> optionalProductCategory = productCategoryRepository.findById(categoryId);
-            productCategoryRepository.deleteById(categoryId);
-            return ResponseEntity.ok(optionalProductCategory.get());
-        }catch (Exception e){
-            throw new NoSuchElementException("No such element found in database. Error message: " + e.getMessage());
-        }
+  @Override
+@Transactional
+public ResponseEntity<ProductCategory> deleteCategory(Long categoryId) {
+    Optional<ProductCategory> optionalProductCategory = productCategoryRepository.findById(categoryId);
+    if (!optionalProductCategory.isPresent()) {
+        throw new NoSuchElementException("No such element found in database.");
     }
+    productCategoryRepository.deleteById(categoryId);
+    return ResponseEntity.ok(optionalProductCategory.get());
+}
 
 
     @Override
