@@ -33,7 +33,7 @@ public class MyAppConfig implements WebMvcConfigurer {
         @Override
         public void addCorsMappings(CorsRegistry registry) {
             registry.addMapping("/**")
-                    .allowedOrigins("http://localhost:4200") // Angular app's origin
+                    .allowedOrigins(theAllowedOrigins) // Angular app's origin
                     .allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS")
                     .allowedHeaders("*")
                     .allowCredentials(true);

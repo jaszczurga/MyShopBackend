@@ -36,7 +36,6 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping ("/api/action")
-@CrossOrigin(origins = "http://localhost:4200")
 public class MyShopController {
 
     ProductService productService;
@@ -123,32 +122,6 @@ public class MyShopController {
     public ResponseEntity<ImageModel> deleteImage(@PathVariable Long imageId) {
         return productService.deleteImage(imageId);
     }
-
-
-//    @PostMapping("/upload/{productId}")
-//    public void uplaodImage(@RequestParam("imageFile") MultipartFile file,@PathVariable Long productId) throws IOException {
-//        System.out.println("Original Image Byte Size - " + file.getBytes().length);
-//        ImageModel img = new ImageModel(
-//                file.getOriginalFilename(),
-//                file.getContentType(),
-//                compressBytes(file.getBytes()),
-//                productId
-//        );
-//        productService.saveImage(img);
-//        //return ResponseEntity.status(HttpStatus.OK);
-//    }
-
-//    @GetMapping(path = { "/get/{imageName}" })
-//    public ImageModel getImage(@PathVariable("imageName") String imageName) throws IOException {
-//        final Optional<ImageModel> retrievedImage = productService.getImageByName(imageName);
-//        ImageModel img = new ImageModel(
-//                retrievedImage.get().getName(),
-//                retrievedImage.get().getType(),
-//                decompressBytes(retrievedImage.get().getPicByte())
-//                retrievedImage.get().getProductId()
-//        );
-//        return img;
-//    }
 
 
 }
