@@ -1,5 +1,8 @@
 
+# MyShop API
+ This project is a simple e-commerce API where users can view products, add them to cart and place orders with payments powered by Stripe. Admin can add, update and delete products. Admin can also view orders placed by users.
 
+* [Frontend implementation of e-commerce Website in Angular](https://github.com/jaszczurga/MyShopAngularFront)
 
 
 #  GET Endpoints in main MyShopController

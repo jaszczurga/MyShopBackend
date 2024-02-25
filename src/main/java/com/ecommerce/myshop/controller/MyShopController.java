@@ -36,6 +36,7 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping ("/api/action")
+@CrossOrigin("http://localhost:4200")
 public class MyShopController {
 
     ProductService productService;
