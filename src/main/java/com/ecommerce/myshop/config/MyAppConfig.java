@@ -22,24 +22,6 @@ public class MyAppConfig implements WebMvcConfigurer {
 
     private final UserRepository userRepository;
 
-    @Value ( "${allowed.origins}" )
-    private String[] theAllowedOrigins;
-
-    @Value( "${spring.data.rest.base-path}" )
-    private String basePath;
-
-
-
-        @Override
-        public void addCorsMappings(CorsRegistry registry) {
-            registry.addMapping("/**")
-                    .allowedOrigins(theAllowedOrigins) // Angular app's origin
-                    .allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS")
-                    .allowedHeaders("*")
-                    .allowCredentials(true);
-
-    }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

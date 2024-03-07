@@ -28,7 +28,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @CrossOrigin(origins = "*")
     @Override
     public void registerStompEndpoints(final StompEndpointRegistry registry) {
-        registry.addEndpoint("/socket.io")
+        registry.addEndpoint("/socket")
                 .setHandshakeHandler(new UserHandShakeHandler(authenticationService))
                 .setAllowedOriginPatterns( "*" )
                 .withSockJS();

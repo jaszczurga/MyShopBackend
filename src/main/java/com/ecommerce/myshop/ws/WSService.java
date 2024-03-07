@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 public class WSService {
 
     private final SimpMessagingTemplate messagingTemplate;
-    private final AuthenticationService authenticationService;
     private final UserRepository userRepository;
 
     //write message to selected user with id
