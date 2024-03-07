@@ -17,12 +17,12 @@ public class WSService {
     private final UserRepository userRepository;
 
     //write message to selected user with id
-    public void notifyUser(final Message message) {
+    public void notifyUser( Message message) {
 
         messagingTemplate.convertAndSendToUser(message.getReceiverId(), "/topic/messages-from-manager",message);
     }
 
-    public void notifyManager(final Message message) {
+    public void notifyManager( Message message) {
         User user = userRepository.findByEmail( "admin@admin.com" ).orElseThrow( () -> new UserNotFoundException( "No Admin user found in Db" ) );
         message.setReceiverId( user.getId().toString() );
 

@@ -11,7 +11,8 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class Message{
-    private String content;
+
     private String receiverId;
+    private String content;
     private String senderId;
 }

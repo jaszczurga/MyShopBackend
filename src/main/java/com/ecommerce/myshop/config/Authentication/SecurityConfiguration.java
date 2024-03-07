@@ -12,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -24,6 +25,7 @@ public class SecurityConfiguration {
 
     private final JwtAuthenticationFilter jwtAuthFilter;
     private  final AuthenticationProvider authenticationProvider;
+    private final PasswordEncoder passwordEncoder;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
@@ -56,7 +58,7 @@ public class SecurityConfiguration {
                 admin.setRole( Role.ADMIN);
                 admin.setFirstName( "Admin" );
                 admin.setLastName( "Admin" );
-                admin.setPassword( "admin" );
+                admin.setPassword( passwordEncoder.encode("admin"));
                 // set other properties like password, etc.
                 userRepository.save(admin);
             }
