@@ -80,4 +80,17 @@ public class AuthenticationService {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     return authentication.getName();
 }
+
+    public int getLoggedInUserId() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            String username = ((UserDetails)principal).getUsername();
+            User user = userRepository.findByEmail(username)
+                    .orElseThrow(() -> new RuntimeException("User not found with email: " + username));
+            return user.getId();
+        }
+
+        throw new IllegalStateException("User not logged in");
+    }
 }

@@ -56,9 +56,9 @@ public class ProductServiceImpl implements ProductService{
 
             return productRepository.save(product);
         }catch (NoSuchElementException e){
-            throw new NoCategoryIdFoundInDbException( "Category id not found in database. Error message: " + e.getMessage());
+            throw new NoCategoryIdFoundInDbException( "Category id not found in database. Error Message: " + e.getMessage());
         } catch (Exception e){
-            throw new CategoryNameExistsException("Category name already exists. Error message: " + e.getMessage());
+            throw new CategoryNameExistsException("Category name already exists. Error Message: " + e.getMessage());
         }
     }
 
@@ -70,7 +70,7 @@ public class ProductServiceImpl implements ProductService{
             productCategory.setCategoryName(receivedProduct.getCategoryName());
             return productCategoryRepository.save(productCategory);
         }catch (Exception e){
-            throw new CategoryNameExistsException("Category name already exists. Error message: " + e.getMessage());
+            throw new CategoryNameExistsException("Category name already exists. Error Message: " + e.getMessage());
         }
     }
 
@@ -108,14 +108,14 @@ public ResponseEntity<ProductCategory> deleteCategory(Long categoryId) {
             //try to find by id if not found throw exception
             product = productRepository.findById(productId).get();
         }catch (Exception e){
-            throw new NoSuchElementException("No such a product element found in database. Error message: " + e.getMessage());
+            throw new NoSuchElementException("No such a product element found in database. Error Message: " + e.getMessage());
         }
 
         try{
             //try to find by id if not found throw exception
             productCategory = productCategoryRepository.findById((long) receivedProduct.getCategory().getId()).get();
         }catch (Exception e){
-            throw new NoSuchElementException("No such a category element found in database. Error message: " + e.getMessage());
+            throw new NoSuchElementException("No such a category element found in database. Error Message: " + e.getMessage());
         }
 
 
@@ -141,12 +141,12 @@ public ResponseEntity<ProductCategory> deleteCategory(Long categoryId) {
             productCategory.setCategoryName( receivedCategory.getCategoryName() );
             return productCategoryRepository.save(productCategory);
         }catch (NoSuchElementException e){
-            throw new NoSuchElementException("No such category element found in database. Error message: " + e.getMessage());
+            throw new NoSuchElementException("No such category element found in database. Error Message: " + e.getMessage());
         }
         //catch (Exception e){
             //TODO: there is some SQLExeption that is not catched by this catch block try to repair it in the future
             // problem disappers when we try to save ProductCategory without assigned id
-           // throw new CategoryNameExistsException("Category name already exists. Error message: " );
+           // throw new CategoryNameExistsException("Category name already exists. Error Message: " );
         //}
     }
 
@@ -200,7 +200,7 @@ public ResponseEntity<ProductCategory> deleteCategory(Long categoryId) {
             imageRepository.deleteById(imageId);
             return ResponseEntity.ok(optionalImageModel.get());
         }catch (Exception e){
-            throw new NoSuchElementException("No such element found in database. Error message: " + e.getMessage());
+            throw new NoSuchElementException("No such element found in database. Error Message: " + e.getMessage());
         }
     }
 
