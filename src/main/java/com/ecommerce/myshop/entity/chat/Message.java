@@ -26,7 +26,7 @@ public class Message{
     private User user;
 
     @ManyToOne
-    @JoinColumn (name = "userSender_id", referencedColumnName = "id")
+    @JoinColumn (name = "user_sender_id", referencedColumnName = "id")
     private User userSender;
 
 
@@ -36,5 +36,10 @@ public class Message{
 
     @Column (name = "timestamp")
     private Date timestamp;
+
+    @PrePersist
+    protected void onCreate() {
+        timestamp = new Date();
+    }
 }
 

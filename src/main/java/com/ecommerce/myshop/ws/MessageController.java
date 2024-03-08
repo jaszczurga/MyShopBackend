@@ -11,17 +11,17 @@ import org.springframework.stereotype.Controller;
 public class MessageController{
     private final Logger LOG = LoggerFactory.getLogger(UserHandShakeHandler.class);
     final WSService wsService;
-   // final ChatService chatService;
+   final ChatService chatService;
 
-    @MessageMapping("/send-messageDto-to-shop-manager")
+    @MessageMapping("/send-message-to-shop-manager")
     public void sendMessageToShopManager(MessageDto messageDto){
-        //chatService.addMessage( messageDto );
+        chatService.addMessage( messageDto );
         wsService.notifyManager( messageDto );
     }
 
-    @MessageMapping("/send-messageDto-to-customer")
+    @MessageMapping("/send-message-to-customer")
     public void sendMessageToCustomer(MessageDto messageDto){
-        //chatService.addMessage( messageDto );
+        chatService.addMessage( messageDto );
         LOG.info("Sending messageDto to customer with id: {}", messageDto.getReceiverId());
         wsService.notifyUser( messageDto );
     }

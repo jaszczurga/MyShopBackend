@@ -3,10 +3,12 @@ package com.ecommerce.myshop.service.chat;
 import com.ecommerce.myshop.Exceptions.NotFoundException;
 import com.ecommerce.myshop.dao.Authentication.UserRepository;
 import com.ecommerce.myshop.dao.chat.ConversationRepository;
+import com.ecommerce.myshop.dao.chat.MessageRepository;
 import com.ecommerce.myshop.dataTranferObject.ConversationDto;
 import com.ecommerce.myshop.entity.chat.Conversation;
 import com.ecommerce.myshop.entity.chat.Message;
 import com.ecommerce.myshop.ws.MessageDto;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,7 @@ public class ChatServiceImpl implements ChatService{
     private final ConversationRepository conversationRepository;
     private final UserRepository userRepository;
     private final ChatUtils chatUtils;
+    private final MessageRepository messageRepository;
 
     @Override
     public void createConversation(Integer user1Id , Integer user2Id) {
@@ -52,6 +55,7 @@ public class ChatServiceImpl implements ChatService{
     }
 
     @Override
+    @Transactional
 public void addMessage(MessageDto messageDto) {
     Conversation conversation = conversationRepository.findByUser1IdAndUser2Id(
         Integer.parseInt( messageDto.getSenderId()),
@@ -63,12 +67,17 @@ public void addMessage(MessageDto messageDto) {
     }
         Message message = new Message();
         message.setContent( messageDto.getContent() );
+        message.setConversation(conversation);
         message.setUser( userRepository.findById( Integer.parseInt( messageDto.getReceiverId() ) ).orElseThrow(
                 () -> new NotFoundException("User not found with id: " + messageDto.getSenderId())
         ) );
         message.setUserSender( userRepository.findById( Integer.parseInt( messageDto.getSenderId() ) ).orElseThrow(
                 () -> new NotFoundException("User not found with id: " + messageDto.getSenderId())
         ) );
+
+    messageRepository.save(message);
+
+
         conversation.addMessage(message);
 
     conversationRepository.save(conversation);
