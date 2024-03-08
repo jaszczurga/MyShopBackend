@@ -15,13 +15,11 @@ public class MessageController{
 
     @MessageMapping("/send-message-to-shop-manager")
     public void sendMessageToShopManager(MessageDto messageDto){
-        chatService.addMessage( messageDto );
         wsService.notifyManager( messageDto );
     }
 
     @MessageMapping("/send-message-to-customer")
     public void sendMessageToCustomer(MessageDto messageDto){
-        chatService.addMessage( messageDto );
         LOG.info("Sending messageDto to customer with id: {}", messageDto.getReceiverId());
         wsService.notifyUser( messageDto );
     }

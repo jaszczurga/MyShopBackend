@@ -33,12 +33,12 @@ public class SecurityConfiguration {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeRequests((authorize)-> authorize
-                        .requestMatchers(  "/api/v1/auth/**","/**")
+                        .requestMatchers(  "/api/v1/auth/**")
                         .permitAll()
-//                        .requestMatchers(HttpMethod.GET, "/api/action/**", "/api/orders/**")
-//                        .permitAll()
-//                        .anyRequest()
-//                        .authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/action/**", "/api/orders/**")
+                        .permitAll()
+                        .anyRequest()
+                        .authenticated()
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy( SessionCreationPolicy.STATELESS ))

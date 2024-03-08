@@ -27,7 +27,7 @@ public class ChatController{
     @GetMapping("/conversationByUserId")
     public ResponseEntity<ConversationDto> getConversationByUserId(@RequestParam int userId,
                                                                    @RequestParam(required = false,defaultValue = "0") int pageNumberOfMessages,
-                                                                   @RequestParam(required = false,defaultValue = "5") int pageSizeOfMessages
+                                                                   @RequestParam(required = false,defaultValue = "0") int pageSizeOfMessages
     ) {
         //get id of admin@admin.com
         int adminId = userRepository.findByEmail("admin@admin.com").orElseThrow(
@@ -42,17 +42,12 @@ public class ChatController{
     @GetMapping("/conversationById")
     public ResponseEntity<ConversationDto> getConversationById(@RequestParam int conversationId,
                                                                @RequestParam(required = false,defaultValue = "0") int pageNumberOfMessages,
-                                                               @RequestParam(required = false,defaultValue = "5") int pageSizeOfMessages
+                                                               @RequestParam(required = false,defaultValue = "0") int pageSizeOfMessages
     ) {
         ConversationDto conversationDto = chatService.getConversation(conversationId, pageNumberOfMessages, pageSizeOfMessages);
         return ResponseEntity.ok(conversationDto);
     }
 
-//    @PostMapping("/addMessage")
-//    public ResponseEntity<String> addMessage(@RequestBody MessageDto messageDto) {
-//        chatService.addMessage( messageDto );
-//        return ResponseEntity.ok("MessageDto added");
-//    }
 
 
 

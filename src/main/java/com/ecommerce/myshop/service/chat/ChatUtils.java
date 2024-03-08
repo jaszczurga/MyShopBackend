@@ -32,8 +32,8 @@ public class ChatUtils{
     public MessageDto convertMessageToDto(Message message) {
         MessageDto messageDto = new MessageDto();
 
-        messageDto.setSenderId( message.getUserSender().toString() );
-        messageDto.setReceiverId( message.getUser().toString());
+        messageDto.setSenderId( message.getUserSender().getId().toString() );
+        messageDto.setReceiverId( message.getUser().getId().toString());
         messageDto.setContent( message.getContent() );
         messageDto.setTimestamp( message.getTimestamp() );
         return messageDto;
