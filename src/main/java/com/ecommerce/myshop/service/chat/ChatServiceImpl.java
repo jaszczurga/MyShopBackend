@@ -10,6 +10,8 @@ import com.ecommerce.myshop.entity.chat.Message;
 import com.ecommerce.myshop.ws.MessageDto;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -35,22 +37,27 @@ public class ChatServiceImpl implements ChatService{
     }
 
     @Override
-  public ConversationDto getConversation(Integer conversationId) {
+  public ConversationDto getConversation(Integer conversationId,int pageNumberOfMessages, int pageSizeOfMessages) {
     Conversation conversation = conversationRepository.findById(conversationId).orElse(null);
     if (conversation == null) {
         throw new NotFoundException( "Conversation not found with id: " + conversationId );
     }
+        Pageable pageable = PageRequest.of(pageNumberOfMessages, pageSizeOfMessages);
+        conversation.setMessages(messageRepository.findByConversationId( conversation.getConversationId(),pageable ).getContent() );
     return chatUtils.convertToDto(conversation);
 }
 
 
 
     @Override
-    public ConversationDto getConversationByUsersId(Integer user1Id , Integer user2Id) {
+    public ConversationDto getConversationByUsersId(Integer user1Id , Integer user2Id,int pageNumberOfMessages, int pageSizeOfMessages) {
         Conversation conversation = conversationRepository.findByUser1IdAndUser2Id(user1Id, user2Id);
         if (conversation == null) {
             throw new NotFoundException( "Conversation not found with user1Id: " + user1Id + " and user2Id: " + user2Id );
         }
+        Pageable pageable = PageRequest.of(pageNumberOfMessages, pageSizeOfMessages);
+
+        conversation.setMessages(messageRepository.findByConversationId( conversation.getConversationId(),pageable ).getContent() );
         return chatUtils.convertToDto(conversation);
     }
 

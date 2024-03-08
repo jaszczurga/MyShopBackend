@@ -28,7 +28,7 @@ public class Conversation{
     @JoinColumn (name = "user2_id", referencedColumnName = "id")
     private User user2;
 
-    @OneToMany (mappedBy = "conversation",fetch = FetchType.EAGER)
+    @OneToMany (mappedBy = "conversation",fetch = FetchType.LAZY)
     private List<Message> messages =new ArrayList<>();
 
     public void addMessage(Message message){

@@ -25,20 +25,26 @@ public class ChatController{
 
     //get conversation for choosen user we can filter just by one user because we use conversation between manager ans users
     @GetMapping("/conversationByUserId")
-    public ResponseEntity<ConversationDto> getConversationByUserId(@RequestParam int userId) {
+    public ResponseEntity<ConversationDto> getConversationByUserId(@RequestParam int userId,
+                                                                   @RequestParam(required = false,defaultValue = "0") int pageNumberOfMessages,
+                                                                   @RequestParam(required = false,defaultValue = "5") int pageSizeOfMessages
+    ) {
         //get id of admin@admin.com
         int adminId = userRepository.findByEmail("admin@admin.com").orElseThrow(
                 () -> new NotFoundException("No Admin in the system")
         ).getId();
 
-        ConversationDto conversationDto = chatService.getConversationByUsersId(adminId, userId);
+        ConversationDto conversationDto = chatService.getConversationByUsersId(adminId, userId, pageNumberOfMessages, pageSizeOfMessages);
         return ResponseEntity.ok(conversationDto);
     }
 
     //get conversation by conversation id
     @GetMapping("/conversationById")
-    public ResponseEntity<ConversationDto> getConversationById(@RequestParam int conversationId) {
-        ConversationDto conversationDto = chatService.getConversation(conversationId);
+    public ResponseEntity<ConversationDto> getConversationById(@RequestParam int conversationId,
+                                                               @RequestParam(required = false,defaultValue = "0") int pageNumberOfMessages,
+                                                               @RequestParam(required = false,defaultValue = "5") int pageSizeOfMessages
+    ) {
+        ConversationDto conversationDto = chatService.getConversation(conversationId, pageNumberOfMessages, pageSizeOfMessages);
         return ResponseEntity.ok(conversationDto);
     }
 
