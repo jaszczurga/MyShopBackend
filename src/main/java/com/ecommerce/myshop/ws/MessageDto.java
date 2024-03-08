@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -15,4 +17,5 @@ public class MessageDto{
     private String receiverId;
     private String content;
     private String senderId;
+    private Date timestamp;
 }

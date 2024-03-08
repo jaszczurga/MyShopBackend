@@ -77,7 +77,6 @@ public void addMessage(MessageDto messageDto) {
 
     messageRepository.save(message);
 
-
         conversation.addMessage(message);
 
     conversationRepository.save(conversation);

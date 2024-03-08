@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -27,10 +28,11 @@ public class Conversation{
     @JoinColumn (name = "user2_id", referencedColumnName = "id")
     private User user2;
 
-    @OneToMany (mappedBy = "conversation")
-    private List<Message> messages;
+    @OneToMany (mappedBy = "conversation",fetch = FetchType.EAGER)
+    private List<Message> messages =new ArrayList<>();
 
     public void addMessage(Message message){
         messages.add(message);
+        message.setConversation(this);
     }
 }
