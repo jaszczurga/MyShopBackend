@@ -10,5 +10,5 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class ListDto{
-    private List<UserDto> list;
+    private List<?> list;
 }

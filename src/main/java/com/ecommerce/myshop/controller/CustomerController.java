@@ -24,22 +24,23 @@ public class CustomerController{
     final  private UserService userService;
 
     //get all users endpoint
-    @GetMapping ("/users")
-    public ResponseEntity<ListDto> getAllUsers(@RequestParam(required = false,defaultValue = "0") int pageOfUsers,
-                                               @RequestParam(required = false,defaultValue = "1") int numberOfUsers) {
-        Pageable pageable = PageRequest.of(pageOfUsers, numberOfUsers);
-        ListDto listDto = new ListDto();
-        Page<User> users = userService.getAllUsers(pageable);
+  @GetMapping ("/allUsers")
+public ResponseEntity<ListDto> getAllUsers(@RequestParam(required = false,defaultValue = "0") int pageOfUsers,
+                                           @RequestParam(required = false,defaultValue = "1") int numberOfUsers) {
+    Pageable pageable = PageRequest.of(pageOfUsers, numberOfUsers);
+    ListDto listDto = new ListDto();
+    Page<User> users = userService.getAllUsers(pageable);
 
-        listDto.setList( users.stream().map(user ->
-                new UserDto(
-                        user.getId().toString(),
-                        user.getFirstName(),
-                        user.getLastName(),
-                        user.getEmail()))
-                .toList());
-        return ResponseEntity.ok(listDto);
-    }
+    listDto.setList( users.stream()
+            .filter(user -> !user.getEmail().equals("admin@admin.com"))
+            .map(user -> new UserDto(
+                    user.getId().toString(),
+                    user.getFirstName(),
+                    user.getLastName(),
+                    user.getEmail()))
+            .toList());
+    return ResponseEntity.ok(listDto);
+}
 
 
 
