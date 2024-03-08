@@ -1,6 +1,7 @@
 package com.ecommerce.myshop.config;
 
 import com.ecommerce.myshop.dao.Authentication.UserRepository;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +18,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class MyAppConfig implements WebMvcConfigurer {
 
     private final UserRepository userRepository;

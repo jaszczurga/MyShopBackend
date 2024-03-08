@@ -1,15 +1,15 @@
 package com.ecommerce.myshop.controller;
 
+import com.ecommerce.myshop.Exceptions.NotFoundException;
 import com.ecommerce.myshop.dao.Authentication.UserRepository;
 import com.ecommerce.myshop.dataTranferObject.ConversationDto;
+import com.ecommerce.myshop.service.Authentication.AuthenticationService;
 import com.ecommerce.myshop.service.chat.ChatService;
+import com.ecommerce.myshop.ws.MessageDto;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @AllArgsConstructor
@@ -19,12 +19,17 @@ public class ChatController{
 
     private final ChatService chatService;
     private final UserRepository userRepository;
+    private final AuthenticationService authenticationService;
+
+    //conversation is created during registration
 
     //get conversation for choosen user we can filter just by one user because we use conversation between manager ans users
     @GetMapping("/conversationByUserId")
     public ResponseEntity<ConversationDto> getConversationByUserId(@RequestParam int userId) {
         //get id of admin@admin.com
-        int adminId = userRepository.findByEmail("admin@admin.com").orElseThrow().getId();
+        int adminId = userRepository.findByEmail("admin@admin.com").orElseThrow(
+                () -> new NotFoundException("No Admin in the system")
+        ).getId();
 
         ConversationDto conversationDto = chatService.getConversationByUsersId(adminId, userId);
         return ResponseEntity.ok(conversationDto);
@@ -36,5 +41,13 @@ public class ChatController{
         ConversationDto conversationDto = chatService.getConversation(conversationId);
         return ResponseEntity.ok(conversationDto);
     }
+
+//    @PostMapping("/addMessage")
+//    public ResponseEntity<String> addMessage(@RequestBody MessageDto messageDto) {
+//        chatService.addMessage( messageDto );
+//        return ResponseEntity.ok("MessageDto added");
+//    }
+
+
 
 }

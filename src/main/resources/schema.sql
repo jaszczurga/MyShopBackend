@@ -87,6 +87,7 @@ CREATE TABLE IF NOT EXISTS `messages` (
     `message_id` INT PRIMARY KEY AUTO_INCREMENT,
     `conversation_id` INT,
     `user_id` INT,
+    `userSender_id` INT,
     `content` TEXT,
     `timestamp` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (`conversation_id`) REFERENCES `conversations`(`conversation_id`),

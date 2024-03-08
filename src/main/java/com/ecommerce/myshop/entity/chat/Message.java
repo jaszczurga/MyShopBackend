@@ -1,6 +1,7 @@
 package com.ecommerce.myshop.entity.chat;
 
 import com.ecommerce.myshop.entity.Authentication.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -15,13 +16,20 @@ public class Message{
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Integer messageId;
 
+    @JsonIgnore
     @ManyToOne
-    @JoinColumn (name = "conversation_id", referencedColumnName = "conversation_id")
+    @JoinColumn (name = "conversation_id", referencedColumnName = "conversationId")
     private Conversation conversation;
 
     @ManyToOne
     @JoinColumn (name = "user_id", referencedColumnName = "id")
     private User user;
+
+    @ManyToOne
+    @JoinColumn (name = "userSender_id", referencedColumnName = "id")
+    private User userSender;
+
+
 
     @Column (name = "content")
     private String content;

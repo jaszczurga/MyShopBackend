@@ -8,6 +8,7 @@ import com.ecommerce.myshop.dataTranferObject.Authentication.RegisterRequest;
 import com.ecommerce.myshop.dataTranferObject.Authentication.UserAuthoritiesDto;
 import com.ecommerce.myshop.entity.Authentication.Role;
 import com.ecommerce.myshop.entity.Authentication.User;
+import com.ecommerce.myshop.service.chat.ChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,6 +29,7 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final ChatService chatService;
     public AuthenticationResponse register(RegisterRequest request) {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new RuntimeException("Email already in use");
@@ -40,6 +42,14 @@ public class AuthenticationService {
                 .role( Role.USER )
                 .build();
         userRepository.save(user);
+
+         int userGeneratedId = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + request.getEmail()))
+                .getId();
+        chatService.createConversation(1, userGeneratedId);
+
+
+
         var jwtToken = jwtService.generateToken(user);
         return  AuthenticationResponse
                 .builder()

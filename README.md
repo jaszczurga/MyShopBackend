@@ -114,7 +114,7 @@ This endpoint makes an HTTP GET request to retrieve details of a specific produc
 
 * **Error messages**
     * **Code:404
-      "message": "No value present"
+      "messageDto": "No value present"
 
     
 
@@ -176,10 +176,10 @@ if there's no such a category with a given id it creates new category with given
 ```
 * **Error messages**
     * **Code:404
-      "message": "Category id not found in database. Error message: No value present",
+      "messageDto": "Category id not found in database. Error messageDto: No value present",
   #### OR ####
     * **Code:400
-      "message": "Category name already exists.
+      "messageDto": "Category name already exists.
 
 ## 2. Save a new Category
 
@@ -213,7 +213,7 @@ This API endpoint makes an HTTP POST request to save a new category. The request
 
 * **Error messages**
     * **Code:400
-      "message": "Category name already exists.
+      "messageDto": "Category name already exists.
 
 
 # DELETE Endpoints in main MyShopController
@@ -256,7 +256,7 @@ This API endpoint makes an HTTP POST request to delete a product by its id.
 
 * **Error messages**
     * **Code:404
-      "message": "Product id not found in database. Error message: No value present"
+      "messageDto": "Product id not found in database. Error messageDto: No value present"
 
 ## 2. Delete category by Id
 
@@ -281,7 +281,7 @@ This API endpoint makes an HTTP DELETE request to delete a category by its id an
 ```
 * **Error messages**
     * **Code:404
-      "message": "No such element found in database"
+      "messageDto": "No such element found in database"
 
 ## 3. Delete image by Id
 
@@ -307,7 +307,7 @@ This API endpoint makes an HTTP DELETE request to delete an image with a given i
 ```
 * **Error messages**
     * **Code:404
-      "message": "No such element found in database"
+      "messageDto": "No such element found in database"
 
 # PATCH Endpoints in main MyShopController
 
@@ -360,7 +360,7 @@ This HTTP PATCH request is used to update a specific category with the provided 
 
 * **Error messages**
     * **Code:404
-      "message": "No value present"
+      "messageDto": "No value present"
 
 ## 2. Update Product by Id
 
@@ -405,7 +405,7 @@ This HTTP PATCH request is used to update a specific product with the given ID. 
 
 * **Error messages**
     * **Code:404
-      "message": "No value present"
+      "messageDto": "No value present"
 
 
 ____________________________________________________________________
