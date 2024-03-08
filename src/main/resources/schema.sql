@@ -75,7 +75,23 @@ CREATE TABLE IF NOT EXISTS `_user` (
 )ENGINE=InnoDB;
 
 
+CREATE TABLE IF NOT EXISTS `conversations` (
+    `conversation_id` INT PRIMARY KEY AUTO_INCREMENT,
+    `user1_id` INT,
+    `user2_id` INT,
+    FOREIGN KEY (`user1_id`) REFERENCES `_user`(`id`),
+    FOREIGN KEY (`user2_id`) REFERENCES `_user`(`id`)
+    ) ENGINE=InnoDB;
 
+CREATE TABLE IF NOT EXISTS `messages` (
+    `message_id` INT PRIMARY KEY AUTO_INCREMENT,
+    `conversation_id` INT,
+    `user_id` INT,
+    `content` TEXT,
+    `timestamp` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`conversation_id`) REFERENCES `conversations`(`conversation_id`),
+    FOREIGN KEY (`user_id`) REFERENCES `_user`(`id`)
+    ) ENGINE=InnoDB;
 
 
 
