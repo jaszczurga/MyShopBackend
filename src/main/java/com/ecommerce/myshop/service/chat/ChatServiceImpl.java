@@ -35,7 +35,6 @@ public class ChatServiceImpl implements ChatService{
         ) );
         conversationRepository.save(conversation);
     }
-
     @Override
   public ConversationDto getConversation(Integer conversationId,int pageNumberOfMessages, int pageSizeOfMessages) {
     Conversation conversation = conversationRepository.findById(conversationId).orElse(null);

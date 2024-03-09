@@ -18,14 +18,18 @@ spring:
     url: jdbc:mysql://localhost:3307/myshop
     username: root
     password: admin
-#    username: springstudent
-#    password: springstudent
 allowed:
   origins: http://localhost:4200
 
 stripe:
   key:
-    secret: sk_test_51J
+    secret: put your stripe secret key here
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: mappings
 
 
 
