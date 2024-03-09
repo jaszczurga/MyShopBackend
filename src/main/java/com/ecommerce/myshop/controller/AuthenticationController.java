@@ -1,9 +1,6 @@
 package com.ecommerce.myshop.controller;
 
-import com.ecommerce.myshop.dataTranferObject.Authentication.AuthenticationRequest;
-import com.ecommerce.myshop.dataTranferObject.Authentication.AuthenticationResponse;
-import com.ecommerce.myshop.dataTranferObject.Authentication.RegisterRequest;
-import com.ecommerce.myshop.dataTranferObject.Authentication.UserAuthoritiesDto;
+import com.ecommerce.myshop.dataTranferObject.Authentication.*;
 import com.ecommerce.myshop.service.Authentication.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +24,13 @@ public class AuthenticationController {
     public ResponseEntity<AuthenticationResponse> register(
             @RequestBody AuthenticationRequest request) {
         return ResponseEntity.ok(authenticationService.authenticate(request));
+    }
+
+    //get currently logged in user id
+    @GetMapping("/currentUserId")
+    public ResponseEntity<UserIdRequest> getCurrentUserId() {
+        UserIdRequest userIdRequest = new UserIdRequest(authenticationService.getLoggedInUserId());
+        return ResponseEntity.ok(userIdRequest);
     }
 
     @GetMapping("/roles")

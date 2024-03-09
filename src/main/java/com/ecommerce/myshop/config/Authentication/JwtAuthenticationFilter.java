@@ -28,21 +28,39 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
 
+
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request ,
             @NonNull HttpServletResponse response ,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
-        final String authHeader = request.getHeader("Authorization");
+//        final String authHeader = request.getHeader("Authorization");
+//        final String jwt;
+//        final String userEmail;
+//        if(authHeader==null || !authHeader.startsWith("Bearer ")){
+//            filterChain.doFilter(request,response);
+//            return;
+//        }
+        //searching for token first in header and then in the request parameter in order to authenticate WEB SOCKET
+        final String jwtFromHeader = request.getHeader("Authorization");
+        final String jwtFromParam = request.getParameter("token");
         final String jwt;
         final String userEmail;
-        if(authHeader==null || !authHeader.startsWith("Bearer ")){
+
+
+        if(jwtFromHeader != null && jwtFromHeader.startsWith("Bearer ")) {
+            jwt = jwtFromHeader.substring(7);
+        } else if(jwtFromParam != null && jwtFromParam.startsWith("Bearer ")) {
+            jwt = jwtFromParam.substring(7);
+        } else {
             filterChain.doFilter(request,response);
             return;
         }
+
+
         //if the token is valid, we will set the authentication object in the security context 7 because Bearer is 7 characters long
-        jwt = authHeader.substring( 7 );
+        //jwt = authHeader.substring( 7 );
         userEmail = jwtService.extractUsername(jwt);
         if(userEmail!=null && SecurityContextHolder.getContext().getAuthentication()==null){
             UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);

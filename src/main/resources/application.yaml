@@ -1,0 +1,39 @@
+
+
+spring:
+  sql:
+    init:
+      mode: always
+  data:
+    rest:
+      base-path: /api
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+    show-sql: true
+    database: mysql
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3307/myshop
+    username: root
+    password: admin
+allowed:
+  origins: http://localhost:4200
+
+stripe:
+  key:
+    secret: put your stripe secret key here
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: mappings
+
+
+
+
+
+
+
