@@ -1,7 +1,7 @@
 package com.ecommerce.myshop.ws;
 
 
-import com.ecommerce.myshop.Exceptions.UserNotFoundException;
+import com.ecommerce.myshop.Exceptions.NotFoundException;
 import com.ecommerce.myshop.dao.Authentication.UserRepository;
 import com.ecommerce.myshop.entity.Authentication.User;
 import com.ecommerce.myshop.service.chat.ChatService;
@@ -25,7 +25,7 @@ public class WSService {
     }
 
     public void notifyManager( MessageDto messageDto) {
-        User user = userRepository.findByEmail( "admin@admin.com" ).orElseThrow( () -> new UserNotFoundException( "No Admin user found in Db" ) );
+        User user = userRepository.findByEmail( "admin@admin.com" ).orElseThrow( () -> new NotFoundException( "No Admin user found in Db" ) );
         messageDto.setReceiverId( user.getId().toString() );
         chatService.addMessage( messageDto );
         messagingTemplate.convertAndSendToUser( messageDto.getReceiverId(), "/topic/messages-from-customers", messageDto );

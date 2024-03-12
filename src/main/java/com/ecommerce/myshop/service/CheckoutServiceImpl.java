@@ -20,15 +20,12 @@ import java.util.*;
 public class CheckoutServiceImpl implements CheckoutService{
 
     private CustomerRepository customerRepository;
-    private OrderRepository orderRepository;
 
 
     public CheckoutServiceImpl(CustomerRepository customerRepository,
                                OrderRepository orderRepository,
                                @Value ("${stripe.key.secret}") String secretKey) {
         this.customerRepository = customerRepository;
-        this.orderRepository = orderRepository;
-
         Stripe.apiKey = secretKey;
     }
 
