@@ -101,24 +101,19 @@ public ResponseEntity<ProductCategory> deleteCategory(Long categoryId) {
     @Transactional
     public Product updateProduct(ProductDto receivedProduct , Long productId) {
         if(productId == null) throw new IllegalArgumentException( "Product id is null");
+        if(receivedProduct.getCategory().getId() == null) throw new IllegalArgumentException( "Category id is null");
 
         Product product = new Product();
         ProductCategory productCategory = new ProductCategory();
 
-        try{
             //try to find by id if not found throw exception
-            product = productRepository.findById(productId).get();
-        }catch (NotFoundException e){
-            throw new NotFoundException("No such a product element found in database. Error MessageDto: " + e.getMessage());
-        }
+            product = productRepository.findById(productId).orElseThrow(
+                    () -> new NotFoundException("No such a product element found in database.")
+            );
 
-        try{
             //try to find by id if not found throw exception
-            productCategory = productCategoryRepository.findById((long) receivedProduct.getCategory().getId()).get();
-        }catch (NotFoundException e){
-            throw new NotFoundException("No such a category element found in database. Error MessageDto: " + e.getMessage());
-        }
-
+            productCategory = productCategoryRepository.findById((long) receivedProduct.getCategory().getId()).orElseThrow(
+                    () -> new NotFoundException("No such a category element found in database."));
 
         //update product from received product
         product = createProductFromDTO(receivedProduct);
@@ -174,9 +169,8 @@ public ResponseEntity<ProductCategory> deleteCategory(Long categoryId) {
     @Override
     public Product getProductById(Long productId) {
         if(productId == null) throw new IllegalArgumentException( "Product id is null");
-        return productRepository.findById(productId).get();
+        return productRepository.findById(productId).orElseThrow(() -> new NotFoundException("No such element found in database."));
     }
-
 
     @Override
     public Page<ImageDto> getImagesByProductId(Long productId, Pageable pageable) {

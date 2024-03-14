@@ -59,7 +59,6 @@ mvn spring-boot:run
 ```
 
 ## Key Features:
-* The platform boasts an intuitive and visually appealing user interface, ensuring a smooth navigation experience for customers.
 * Users can explore a wide range of products conveniently categorized for easy browsing. Each product is presented with description and images.
 * Customers can add desired items to their shopping cart with a single click. The cart dynamically updates to display the added products, allowing users to review their selections before proceeding to checkout.
 * Users can place orders with payments powered by Stripe.
