@@ -10,22 +10,33 @@
 3. [Key Features](#key-features)
 4. [Endpoints](#endpoints)
 
-
+__________________________________
 ## Technologies
+#### Backend Technologies
 * Java 21
 * Spring Boot
 * Spring Security
-* Spring Data JPA
-* Hibernate
-* MySQL
-* Maven
-* Lombok
 * JWT
+* Spring Data JPA
+* MySQL
+
+#### Testing Technologies
+* JUnit 
+* Mockito
+* Hamcrest
+* JsonPath
+
+#### Build Tool
+* Maven
+
+#### Payment Gateway
 * Stripe
+
+#### Real-time Communication
 * WebSockets
 * STOMP
 * SOCKJS
-
+__________________________
 
 ## Setup
 
