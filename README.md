@@ -24,7 +24,8 @@ __________________________________
 * JUnit 
 * Mockito
 * Hamcrest
-* JsonPath
+* AssertJ
+* TestContainers
 
 #### Build Tool
 * Maven

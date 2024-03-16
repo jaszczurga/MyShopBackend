@@ -29,7 +29,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.List;
 
@@ -42,6 +41,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = MyShopController.class)
 @ImportAutoConfiguration(classes = SecurityConfiguration.class)
 public class MyShopControllerTest {
+
+
     @Autowired
     private MockMvc mockMvc;
 
