@@ -1,7 +1,8 @@
 package com.ecommerce.myshop.service;
 
-import com.ecommerce.myshop.Exceptions.CategoryNameExistsException;
-import com.ecommerce.myshop.Exceptions.NoCategoryIdFoundInDbException;
+import com.ecommerce.myshop.Exceptions.ConflictException;
+import com.ecommerce.myshop.Exceptions.IllegalArgumentException;
+import com.ecommerce.myshop.Exceptions.NotFoundException;
 import com.ecommerce.myshop.dao.ImageRepository;
 import com.ecommerce.myshop.dao.ProductCategoryRepository;
 import com.ecommerce.myshop.dao.ProductRepository;
@@ -15,13 +16,10 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.ResponseEntity.BodyBuilder;
-import java.util.NoSuchElementException;
+
 import java.util.Optional;
 @CrossOrigin(origins = "http://localhost:4200")
 @Service
@@ -55,10 +53,10 @@ public class ProductServiceImpl implements ProductService{
             product.getImages().forEach(image -> image.setProduct(product1));
 
             return productRepository.save(product);
-        }catch (NoSuchElementException e){
-            throw new NoCategoryIdFoundInDbException( "Category id not found in database. Error MessageDto: " + e.getMessage());
-        } catch (Exception e){
-            throw new CategoryNameExistsException("Category name already exists. Error MessageDto: " + e.getMessage());
+        }catch (NotFoundException e){
+            throw new NotFoundException( "Category id not found in database. Error MessageDto: " + e.getMessage());
+        }catch (ConflictException e){
+            throw new ConflictException("Category name already exists. Error MessageDto: " + e.getMessage());
         }
     }
 
@@ -69,17 +67,18 @@ public class ProductServiceImpl implements ProductService{
         try{
             productCategory.setCategoryName(receivedProduct.getCategoryName());
             return productCategoryRepository.save(productCategory);
-        }catch (Exception e){
-            throw new CategoryNameExistsException("Category name already exists. Error MessageDto: " + e.getMessage());
+        }catch (ConflictException e){
+            throw new ConflictException("Category name already exists. Error MessageDto: " + e.getMessage());
         }
     }
 
  @Override
 @Transactional
 public ResponseEntity<Product> deleteProduct(Long productId) {
+    if(productId == null) throw new IllegalArgumentException( "Product id is null");
     Optional<Product> optionalProduct = productRepository.findById(productId);
     if (!optionalProduct.isPresent()) {
-        throw new NoSuchElementException("No such element found in database.");
+        throw new NotFoundException( "No such element found in database.");
     }
     productRepository.deleteById(productId);
     return ResponseEntity.ok(optionalProduct.get());
@@ -88,9 +87,10 @@ public ResponseEntity<Product> deleteProduct(Long productId) {
   @Override
 @Transactional
 public ResponseEntity<ProductCategory> deleteCategory(Long categoryId) {
+        if(categoryId == null) throw new IllegalArgumentException( "Category id is null");
     Optional<ProductCategory> optionalProductCategory = productCategoryRepository.findById(categoryId);
     if (!optionalProductCategory.isPresent()) {
-        throw new NoSuchElementException("No such element found in database.");
+        throw new NotFoundException( "No such element found in database.");
     }
     productCategoryRepository.deleteById(categoryId);
     return ResponseEntity.ok(optionalProductCategory.get());
@@ -100,24 +100,20 @@ public ResponseEntity<ProductCategory> deleteCategory(Long categoryId) {
     @Override
     @Transactional
     public Product updateProduct(ProductDto receivedProduct , Long productId) {
+        if(productId == null) throw new IllegalArgumentException( "Product id is null");
+        if(receivedProduct.getCategory().getId() == null) throw new IllegalArgumentException( "Category id is null");
 
         Product product = new Product();
         ProductCategory productCategory = new ProductCategory();
 
-        try{
             //try to find by id if not found throw exception
-            product = productRepository.findById(productId).get();
-        }catch (Exception e){
-            throw new NoSuchElementException("No such a product element found in database. Error MessageDto: " + e.getMessage());
-        }
+            product = productRepository.findById(productId).orElseThrow(
+                    () -> new NotFoundException("No such a product element found in database.")
+            );
 
-        try{
             //try to find by id if not found throw exception
-            productCategory = productCategoryRepository.findById((long) receivedProduct.getCategory().getId()).get();
-        }catch (Exception e){
-            throw new NoSuchElementException("No such a category element found in database. Error MessageDto: " + e.getMessage());
-        }
-
+            productCategory = productCategoryRepository.findById((long) receivedProduct.getCategory().getId()).orElseThrow(
+                    () -> new NotFoundException("No such a category element found in database."));
 
         //update product from received product
         product = createProductFromDTO(receivedProduct);
@@ -133,6 +129,7 @@ public ResponseEntity<ProductCategory> deleteCategory(Long categoryId) {
     @Override
     @Transactional
     public ProductCategory updateCategory(CategoryDto receivedCategory , Long categoryId) {
+        if(categoryId == null) throw new IllegalArgumentException( "Category id is null");
 
         ProductCategory productCategory = new ProductCategory();
         productCategory = productCategoryRepository.findById(categoryId).get();
@@ -140,14 +137,12 @@ public ResponseEntity<ProductCategory> deleteCategory(Long categoryId) {
         try{
             productCategory.setCategoryName( receivedCategory.getCategoryName() );
             return productCategoryRepository.save(productCategory);
-        }catch (NoSuchElementException e){
-            throw new NoSuchElementException("No such category element found in database. Error MessageDto: " + e.getMessage());
+        }catch (NotFoundException e){
+            throw new NotFoundException("No such category element found in database. Error MessageDto: " + e.getMessage());
         }
-        //catch (Exception e){
-            //TODO: there is some SQLExeption that is not catched by this catch block try to repair it in the future
-            // problem disappers when we try to save ProductCategory without assigned id
-           // throw new CategoryNameExistsException("Category name already exists. Error MessageDto: " );
-        //}
+        catch (ConflictException e){
+            throw new ConflictException("Category name already exists. Error MessageDto: " );
+        }
     }
 
     @Override
@@ -167,17 +162,19 @@ public ResponseEntity<ProductCategory> deleteCategory(Long categoryId) {
 
     @Override
     public Page<Product> getProductsByCategoryId(Long categoryId , Pageable pageable) {
+        if(categoryId == null) throw new IllegalArgumentException( "Category id is null");
         return productRepository.findByCategoryId(categoryId, pageable);
     }
 
     @Override
     public Product getProductById(Long productId) {
-        return productRepository.findById(productId).get();
+        if(productId == null) throw new IllegalArgumentException( "Product id is null");
+        return productRepository.findById(productId).orElseThrow(() -> new NotFoundException("No such element found in database."));
     }
-
 
     @Override
     public Page<ImageDto> getImagesByProductId(Long productId, Pageable pageable) {
+        if(productId == null) throw new IllegalArgumentException( "Product id is null");
 
         Page<ImageModel> imageModel = imageRepository.findByProductId(productId, pageable);
         //create imageDto
@@ -195,26 +192,18 @@ public ResponseEntity<ProductCategory> deleteCategory(Long categoryId) {
 
     @Override
     public ResponseEntity<ImageModel> deleteImage(Long imageId) {
+        if(imageId == null) throw new IllegalArgumentException( "Image id is null");
+
         try{
             Optional<ImageModel> optionalImageModel = imageRepository.findById(imageId);
             imageRepository.deleteById(imageId);
             return ResponseEntity.ok(optionalImageModel.get());
-        }catch (Exception e){
-            throw new NoSuchElementException("No such element found in database. Error MessageDto: " + e.getMessage());
+        }catch (NotFoundException e){
+            throw new NotFoundException("No such element found in database. Error MessageDto: " + e.getMessage());
         }
     }
 
 
-//    @Override
-//    public BodyBuilder saveImage(ImageModel imageModel) {
-//        imageRepository.save(imageModel);
-//        return ResponseEntity.status( HttpStatus.OK);
-//    }
-//
-//    @Override
-//    public Optional<ImageModel> getImageByName(String name) {
-//        return imageRepository.findByName(name);
-//    }
 
 
     private Product createProductFromDTO(ProductDto receivedProduct) {
