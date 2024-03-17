@@ -5,6 +5,7 @@ import com.ecommerce.myshop.entity.Product;
 import com.ecommerce.myshop.entity.ProductCategory;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.ecommerce.myshop.integration.AbstractContainerBasedTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,7 @@ import java.util.List;
 //findByJPQL
 @DataJpaTest
 @AutoConfigureTestDatabase (replace = AutoConfigureTestDatabase.Replace.NONE)
-public class ProductRepositoryTests {
+public class ProductRepositoryTests  extends AbstractContainerBasedTest {
 
     @Autowired
     private ProductRepository productRepository;
@@ -97,7 +98,7 @@ public class ProductRepositoryTests {
 
     //JUnit test for get products by keyword
     @Test
-    public void givenKeyWork_whenfindByProductNameContaining_thenProductList() {
+    public void givenKeyWork_whenFindByProductNameContaining_thenProductList() {
         //given - precoditions for the test
         product.setProductName( "Test Product1");
         productRepository.save( product );
