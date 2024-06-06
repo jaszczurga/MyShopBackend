@@ -1,5 +1,6 @@
 package com.ecommerce.myshop.service;
 
+import com.ecommerce.myshop.dao.ProductRepository;
 import com.ecommerce.myshop.dao.checkout.CustomerRepository;
 import com.ecommerce.myshop.dao.checkout.OrderRepository;
 import com.ecommerce.myshop.dataTranferObject.checkout.PaymentInfoDto;
@@ -8,9 +9,11 @@ import com.ecommerce.myshop.dataTranferObject.checkout.PurchaseResponseDto;
 import com.ecommerce.myshop.entity.Checkout.Customer;
 import com.ecommerce.myshop.entity.Checkout.Order;
 import com.ecommerce.myshop.entity.Checkout.OrderItem;
+import com.ecommerce.myshop.entity.Product;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -20,16 +23,20 @@ import java.util.*;
 public class CheckoutServiceImpl implements CheckoutService{
 
     private CustomerRepository customerRepository;
+    private ProductRepository productRepository;
 
 
     public CheckoutServiceImpl(CustomerRepository customerRepository,
+                               ProductRepository productRepository,
                                OrderRepository orderRepository,
                                @Value ("${stripe.key.secret}") String secretKey) {
         this.customerRepository = customerRepository;
+        this.productRepository = productRepository;
         Stripe.apiKey = secretKey;
     }
 
     @Override
+    @Transactional
     public PurchaseResponseDto placeOrder(PurchaseDto purchase) {
         Order order = purchase.getOrder();
 
@@ -37,7 +44,15 @@ public class CheckoutServiceImpl implements CheckoutService{
         order.setOrderTrackingNumber(orderTrackingNumber);
 
         Set<OrderItem> orderItems = purchase.getOrderItems();
-        orderItems.forEach(item -> order.add(item));
+
+        //delete from stock the quantity of the products
+        orderItems.forEach( item -> {
+            Product product = getProductById( item.getProduct().getId() );
+            product.setProductStockQuantity( product.getProductStockQuantity() - item.getQuantity() );
+            productRepository.save( product );
+        } );
+        orderItems.forEach( order::add );
+
 
         order.setOrderAddress( purchase.getAddress() );
 
@@ -53,6 +68,12 @@ public class CheckoutServiceImpl implements CheckoutService{
 
         return new PurchaseResponseDto(orderTrackingNumber);
     }
+
+
+    public Product getProductById(Long productId) {
+        return productRepository.findById(productId).get();
+    }
+
 
     @Override
     public PaymentIntent createPaymentIntent(PaymentInfoDto paymentInfo) throws StripeException {
