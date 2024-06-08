@@ -4,10 +4,11 @@ import com.ecommerce.myshop.entity.Checkout.Address;
 import com.ecommerce.myshop.entity.Checkout.Customer;
 import com.ecommerce.myshop.entity.Checkout.Order;
 import com.ecommerce.myshop.entity.Checkout.OrderItem;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.Set;
-
+@Builder
 @Data
 public class PurchaseDto {
     private Customer customer;

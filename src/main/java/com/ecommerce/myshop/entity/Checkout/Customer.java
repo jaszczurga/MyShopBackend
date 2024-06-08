@@ -1,8 +1,7 @@
 package com.ecommerce.myshop.entity.Checkout;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -12,6 +11,9 @@ import java.util.Set;
 @Table (name = "customers")
 @Getter // Lombok annotation to generate getters
 @Setter // Lombok annotation to generate setters
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Customer {
 
     @Id

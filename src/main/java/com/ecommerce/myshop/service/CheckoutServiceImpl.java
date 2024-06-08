@@ -1,5 +1,6 @@
 package com.ecommerce.myshop.service;
 
+import com.ecommerce.myshop.Exceptions.RunOutOfStock;
 import com.ecommerce.myshop.dao.ProductRepository;
 import com.ecommerce.myshop.dao.checkout.CustomerRepository;
 import com.ecommerce.myshop.dao.checkout.OrderRepository;
@@ -13,8 +14,11 @@ import com.ecommerce.myshop.entity.Product;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
+import jakarta.persistence.OptimisticLockException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -45,22 +49,23 @@ public class CheckoutServiceImpl implements CheckoutService{
 
         Set<OrderItem> orderItems = purchase.getOrderItems();
 
-        //delete from stock the quantity of the products
-        orderItems.forEach( item -> {
-            Product product = getProductById( item.getProduct().getId() );
-            product.setProductStockQuantity( product.getProductStockQuantity() - item.getQuantity() );
-            productRepository.save( product );
-        } );
-        orderItems.forEach( order::add );
+        for (OrderItem item : orderItems) {
+                    Product product = getProductById(item.getProduct().getId());
+                    if (product.getProductStockQuantity() < item.getQuantity()) {
+                        throw new RuntimeException("Product out of stock");
+                    }
+                    product.setProductStockQuantity(product.getProductStockQuantity() - item.getQuantity());
+                    productRepository.save(product);
+        }
 
+        orderItems.forEach(order::add);
 
-        order.setOrderAddress( purchase.getAddress() );
+        order.setOrderAddress(purchase.getAddress());
 
         Customer customer = purchase.getCustomer();
-
         String theEmail = customer.getEmail();
         Customer customerFromDB = customerRepository.findByEmail(theEmail);
-        if(customerFromDB != null) {
+        if (customerFromDB != null) {
             customer = customerFromDB;
         }
         customer.add(order);
@@ -69,9 +74,8 @@ public class CheckoutServiceImpl implements CheckoutService{
         return new PurchaseResponseDto(orderTrackingNumber);
     }
 
-
     public Product getProductById(Long productId) {
-        return productRepository.findById(productId).get();
+        return productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found"));
     }
 
 

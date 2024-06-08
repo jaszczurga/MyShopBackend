@@ -12,16 +12,7 @@ import java.util.NoSuchElementException;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler (NotFoundException.class)
-    public ResponseEntity<ErrorResponseDto> handleNotFoundException(NotFoundException e, WebRequest request){
-        ErrorResponseDto errorResponseDto = new ErrorResponseDto(
-                request.getDescription(false),
-                HttpStatus.NOT_FOUND,
-                e.getMessage(),
-                LocalDateTime.now()
-        );
-        return new ResponseEntity<>(errorResponseDto, HttpStatus.NOT_FOUND);
-    }
+
 
     @ExceptionHandler (ConflictException.class)
     public ResponseEntity<ErrorResponseDto> handleConflictException(ConflictException e, WebRequest request){
@@ -43,6 +34,28 @@ public class GlobalExceptionHandler {
                 LocalDateTime.now()
         );
         return new ResponseEntity<>(errorResponseDto, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler (RunOutOfStock.class)
+    public ResponseEntity<ErrorResponseDto> handleRunOutOfStock(RunOutOfStock e, WebRequest request){
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto(
+                request.getDescription(false),
+                HttpStatus.BAD_REQUEST,
+                e.getMessage(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorResponseDto, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ErrorResponseDto> handleNotFoundException(NotFoundException e, WebRequest request){
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto(
+                request.getDescription(false),
+                HttpStatus.NOT_FOUND,
+                e.getMessage(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorResponseDto, HttpStatus.NOT_FOUND);
     }
 
 

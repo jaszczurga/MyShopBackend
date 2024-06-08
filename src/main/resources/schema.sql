@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS `product` (
     `price` DECIMAL(10, 2),
     `stock_quantity` INT,
     `product_img` varchar(255),
+    `version` INT default 0,
     FOREIGN KEY (`category_id`) REFERENCES `product_category`(`category_id`)
     ) ENGINE=InnoDB;
 

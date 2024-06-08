@@ -1,8 +1,16 @@
 package com.ecommerce.myshop.integration;
 
+import com.ecommerce.myshop.dao.Authentication.UserRepository;
 import com.ecommerce.myshop.dao.ProductCategoryRepository;
 import com.ecommerce.myshop.dao.ProductRepository;
+import com.ecommerce.myshop.dao.checkout.OrderRepository;
 import com.ecommerce.myshop.dataTranferObject.ProductDto;
+import com.ecommerce.myshop.dataTranferObject.checkout.PurchaseDto;
+import com.ecommerce.myshop.entity.Authentication.User;
+import com.ecommerce.myshop.entity.Checkout.Address;
+import com.ecommerce.myshop.entity.Checkout.Customer;
+import com.ecommerce.myshop.entity.Checkout.Order;
+import com.ecommerce.myshop.entity.Checkout.OrderItem;
 import com.ecommerce.myshop.entity.Product;
 import com.ecommerce.myshop.entity.ProductCategory;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,10 +24,16 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -41,6 +55,12 @@ public class MyShopControllerTestsIntegration extends AbstractContainerBasedTest
     private ProductCategoryRepository productCategoryRepository;
 
     @Autowired
+    private OrderRepository orderRepository;
+
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
     private ObjectMapper objectMapper;
 
     private ProductDto productDto;
@@ -48,13 +68,15 @@ public class MyShopControllerTestsIntegration extends AbstractContainerBasedTest
 
     @BeforeEach
     void setUp() {
+        orderRepository.deleteAll();
         productRepository.deleteAll();
         productCategoryRepository.deleteAll();
+        userRepository.deleteAll();
         this.productDto = ProductDto.builder()
                 .productName( "Test Product" )
                 .productPrice( 1000 )
                 .productDescription( "Test Description" )
-                .productStockQuantity( 10 )
+                .productStockQuantity( 1000 )
                 .category( ProductCategory.builder().categoryName( "test1" ).build() )
                 .images( List.of() )
                 .build();
@@ -62,10 +84,15 @@ public class MyShopControllerTestsIntegration extends AbstractContainerBasedTest
                 .productName( "Test Product" )
                 .productPrice( 1000 )
                 .productDescription( "Test Description" )
-                .productStockQuantity( 10 )
+                .productStockQuantity( 1000 )
                 .category( ProductCategory.builder().categoryName( "test1" ).build() )
                 .images( List.of() )
                 .build();
+        //create a user
+//        userRepository.save( User.builder()
+//                .email( "admin2@admin.com" )
+//                .password( "admin" )
+//                .build() );
     }
 
     @Test
@@ -134,6 +161,7 @@ public class MyShopControllerTestsIntegration extends AbstractContainerBasedTest
     @Test
     @DisplayName("get product by id operation")
     public void givenProductId_whenGetProductById_thenReturnProductObject() throws Exception {
+        product.setProductStockQuantity( 10 );
         //given - precoditions for the test
           productRepository.save( product );
         //when - action or the behavior to be tested
@@ -150,7 +178,7 @@ public class MyShopControllerTestsIntegration extends AbstractContainerBasedTest
                 .andExpect( jsonPath( "$.productStockQuantity" , is( 10 ) ) );
     }
 
-    @Test
+    @Test@DisplayName("Test for updating a product")
     public void givenProductDtoAndProductId_whenUpdateProduct_thenReturnUpdatedProduct() throws Exception {
 
         ProductCategory category =  ProductCategory.builder().categoryName( "testing category" ).build();
@@ -177,6 +205,220 @@ public class MyShopControllerTestsIntegration extends AbstractContainerBasedTest
                 .andExpect( jsonPath( "$.productDescription" , is( productDto.getProductDescription() ) ) )
                 .andExpect( jsonPath( "$.productStockQuantity" , is( productDto.getProductStockQuantity() ) ) );
     }
+
+    @Test
+    @DisplayName( "Test for placing an order" )
+    public void givenPurchaseDto_whenPlaceOrder_thenReturnPurchaseResponse() throws Exception {
+        //given - precoditions for the test
+
+        //save example Product to database
+        product.setProductStockQuantity( 20 );
+        Product p = productRepository.save( product );
+        Order order = new Order();
+        order.setTotalQuantity( 1 );
+        order.setTotalPrice( new java.math.BigDecimal( 1000 ) );
+        Set<OrderItem> lista = Set.of( OrderItem.builder()
+                .product( p )
+                .quantity( 1 )
+                .build() );
+
+        Address address = Address.builder()
+                .street( "Test Street" )
+                .city( "Test City" )
+                .state( "Test State" )
+                .country( "Test Country" )
+                .zipCode( "Test ZipCode" )
+                .build();
+        Customer customer = Customer.builder()
+                .email( "admin@admin.com" )
+                .firstName( "Test" )
+                .lastName( "Test" )
+                .build();
+
+        PurchaseDto purchaseDto = PurchaseDto.builder()
+                .order(order )
+                .orderItems( lista)
+                .address( address )
+                .customer( customer )
+                .build();
+
+        //when - action or the behavior to be tested
+        ResultActions response = mockMvc.perform( post( "/api/checkout/purchase" )
+                .contentType( "application/json" )
+                .content( objectMapper.writeValueAsString( purchaseDto ) )
+        );
+
+        //then - the expected result
+        response.andDo( MockMvcResultHandlers.print() )
+                .andExpect( status().isOk() )
+                .andExpect( jsonPath( "$.orderTrackingNumber" , notNullValue() ) );
+    }
+    @Test
+    @DisplayName( "Test for placing an order with concurrently users and with enough stock" )
+    public void givenPurchaseDto_whenPlaceOrderConcurrently_thenReturnPurchaseResponse() throws Exception {
+
+        int numberOfUsers = 10;
+        int stockQuantityOfTestingProduct = 10;
+        List<String> emails = new ArrayList<>();
+
+        for (int i = 0; i < numberOfUsers; i++) {
+            emails.add("test" + (i + 1) + "@user.com");
+        }
+
+        for (String email : emails) {
+            userRepository.save(User.builder()
+                    .email(email)
+                    .password("admin")
+                    .build());
+        }
+
+        // Given - preconditions for the test
+        product.setProductStockQuantity(stockQuantityOfTestingProduct);
+        // Save example Product to database
+        Product p = productRepository.save(product);
+
+        Order order = new Order();
+        order.setTotalQuantity(1);
+        order.setTotalPrice(new java.math.BigDecimal(1000));
+        Set<OrderItem> orderItems = Set.of(OrderItem.builder()
+                .product(p)
+                .quantity(1)
+                .build());
+
+        Address address = Address.builder()
+                .street("Test Street")
+                .city("Test City")
+                .state("Test State")
+                .country("Test Country")
+                .zipCode("Test ZipCode")
+                .build();
+
+        List<PurchaseDto> purchaseDtoList = new ArrayList<>();
+        for (int i = 0; i < numberOfUsers; i++) {
+            PurchaseDto purchaseDto = PurchaseDto.builder()
+                    .order(order)
+                    .orderItems(orderItems)
+                    .address(address)
+                    .customer(Customer.builder()
+                            .email(emails.get(i))
+                            .firstName("Test")
+                            .lastName("Test")
+                            .build())
+                    .build();
+            purchaseDtoList.add(purchaseDto);
+        }
+
+        // When - action or the behavior to be tested
+        ExecutorService executor = Executors.newFixedThreadPool(numberOfUsers);
+        List<Future<ResultActions>> futures = new ArrayList<>();
+
+        for (PurchaseDto purchaseDto : purchaseDtoList) {
+            Future<ResultActions> future = executor.submit(() -> mockMvc.perform(post("/api/checkout/purchase")
+                    .contentType("application/json")
+                    .content(objectMapper.writeValueAsString(purchaseDto))
+            ));
+            futures.add(future);
+        }
+
+        // Then - the expected result
+        for (Future<ResultActions> future : futures) {
+            ResultActions response = future.get();
+            response.andDo(MockMvcResultHandlers.print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.orderTrackingNumber", notNullValue()));
+        }
+
+        executor.shutdown();
+    }
+
+    @Test
+    @DisplayName( "Test for placing an order with concurrently users and without enough stock")
+    public void givenPurchaseDto_whenPlaceOrderConcurrently_thenReturnPurchaseResponseWithFailure() throws Exception {
+
+        int numberOfUsers = 10;
+        int stockQuantityOfTestingProduct = 1;
+        List<String> emails = new ArrayList<>();
+
+        for (int i = 0; i < numberOfUsers; i++) {
+            emails.add("test" + (i + 1) + "@user.com");
+        }
+
+        for (String email : emails) {
+            userRepository.save(User.builder()
+                    .email(email)
+                    .password("admin")
+                    .build());
+        }
+
+        // Given - preconditions for the test
+        product.setProductStockQuantity(stockQuantityOfTestingProduct);
+        // Save example Product to database
+        Product p = productRepository.save(product);
+
+        Order order = new Order();
+        order.setTotalQuantity(1);
+        order.setTotalPrice(new java.math.BigDecimal(1000));
+        Set<OrderItem> orderItems = Set.of(OrderItem.builder()
+                .product(p)
+                .quantity(1)
+                .build());
+
+        Address address = Address.builder()
+                .street("Test Street")
+                .city("Test City")
+                .state("Test State")
+                .country("Test Country")
+                .zipCode("Test ZipCode")
+                .build();
+
+        List<PurchaseDto> purchaseDtoList = new ArrayList<>();
+        for (int i = 0; i < numberOfUsers; i++) {
+            PurchaseDto purchaseDto = PurchaseDto.builder()
+                    .order(order)
+                    .orderItems(orderItems)
+                    .address(address)
+                    .customer(Customer.builder()
+                            .email(emails.get(i))
+                            .firstName("Test")
+                            .lastName("Test")
+                            .build())
+                    .build();
+            purchaseDtoList.add(purchaseDto);
+        }
+
+        // When - action or the behavior to be tested
+        ExecutorService executor = Executors.newFixedThreadPool(numberOfUsers);
+        List<Future<ResultActions>> futures = new ArrayList<>();
+
+        for (PurchaseDto purchaseDto : purchaseDtoList) {
+            Future<ResultActions> future = executor.submit(() -> mockMvc.perform(post("/api/checkout/purchase")
+                    .contentType("application/json")
+                    .content(objectMapper.writeValueAsString(purchaseDto))
+            ));
+            futures.add(future);
+        }
+
+        int successfullResponses = 0;
+        int failedResponses = 0;
+
+        // Then - the expected result
+        for (Future<ResultActions> future : futures) {
+            ResultActions response = future.get();
+            if(response.andReturn().getResponse().getStatus() ==200){
+                successfullResponses++;
+            }else {
+                failedResponses++;
+            }
+        }
+
+        assertTrue(successfullResponses==stockQuantityOfTestingProduct);
+        assertTrue(failedResponses == numberOfUsers - stockQuantityOfTestingProduct);
+        assertTrue( productRepository.findById(p.getId()).get().getProductStockQuantity() == 0);
+
+        executor.shutdown();
+    }
+
+
 
 
 }

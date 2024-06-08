@@ -5,7 +5,6 @@ import com.ecommerce.myshop.dao.Authentication.UserRepository;
 import com.ecommerce.myshop.dataTranferObject.ConversationDto;
 import com.ecommerce.myshop.service.Authentication.AuthenticationService;
 import com.ecommerce.myshop.service.chat.ChatService;
-import com.ecommerce.myshop.ws.MessageDto;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

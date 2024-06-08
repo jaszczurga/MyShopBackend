@@ -25,6 +25,10 @@ public class Product {
     @Column (name = "product_id")
     private Long id;
 
+    @Version
+    @Column(name = "version")
+    private int version;
+
     @Column (name = "name")
     private String productName;
 
