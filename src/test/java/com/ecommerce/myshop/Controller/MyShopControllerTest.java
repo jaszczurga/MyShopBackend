@@ -39,7 +39,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = MyShopController.class)
-@ImportAutoConfiguration(classes = SecurityConfiguration.class)
+@AutoConfigureMockMvc(addFilters = false)
+//@ImportAutoConfiguration(classes = SecurityConfiguration.class)
 public class MyShopControllerTest {
 
 

@@ -88,5 +88,10 @@ public void addMessage(MessageDto messageDto) {
     conversationRepository.save(conversation);
 }
 
+    @Override
+    public void deleteConversationsForGivenUserId(Integer id) {
+        conversationRepository.deleteByUserId( id );
+    }
+
 
 }

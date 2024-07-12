@@ -1,5 +1,6 @@
 package com.ecommerce.myshop.entity.Authentication;
 
+import com.ecommerce.myshop.entity.chat.Conversation;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder

@@ -866,6 +866,31 @@ This endpoint makes an HTTP GET request to retrieve the roles from the server. T
   "rolesString": "USER,ADMIN"
 }
 ```
+
+## 4. Endpoint for deleting user accounts
+
+```http
+  DELETE  /api/v1/auth/delete
+```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `email`   | `string` | The email of the user to delete. |
+
+* **Description**
+
+This endpoint is used to delete a user account by providing the user's email and all connected conversations
+
+
+* **Success Response**
+    * **Code:200**
+      <br>
+      response body
+```json
+"user email deleted"
+```
+
+
 ________________________
 # OrdersController
 

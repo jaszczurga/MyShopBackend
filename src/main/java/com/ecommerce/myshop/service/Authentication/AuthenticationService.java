@@ -105,5 +105,16 @@ public class AuthenticationService {
     }
 
 
+    public String deleteUser(String email) {
 
+        boolean isUser = userRepository.findByEmail( email ).isPresent();
+        if(!isUser){
+            throw new RuntimeException("user already deleted");
+        }else{
+            User user = userRepository.findByEmail( email ).get();
+            chatService.deleteConversationsForGivenUserId( user.getId() );
+            userRepository.delete( userRepository.findByEmail( email ).get() );
+        }
+        return "user " + email + "deleted";
+    }
 }
