@@ -6,4 +6,6 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 @RepositoryRestResource (collectionResourceRel = "productCategories", path = "productCategories")
 public interface ProductCategoryRepository extends JpaRepository<ProductCategory, Long> {
 
+    //get category by name
+    ProductCategory findByCategoryName(String name);
 }

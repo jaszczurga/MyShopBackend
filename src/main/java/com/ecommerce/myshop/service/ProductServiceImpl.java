@@ -218,12 +218,16 @@ public ResponseEntity<ProductCategory> deleteCategory(Long categoryId) {
     }
 
     private void assignCategoryToProduct(ProductDto receivedProduct, Product product) {
-        if (receivedProduct.getCategory().getId() == null) {
+        if (receivedProduct.getCategory().getId() == null && productCategoryRepository.findByCategoryName( receivedProduct.getCategory().getCategoryName())==null) {
             ProductCategory productCategory = new ProductCategory();
             productCategory.setCategoryName(receivedProduct.getCategory().getCategoryName());
             product.setCategory(productCategory);
         } else {
-            product.setCategory(productCategoryRepository.findById((long) receivedProduct.getCategory().getId()).get());
+            if(productCategoryRepository.findByCategoryName( receivedProduct.getCategory().getCategoryName())==null) {
+                product.setCategory( productCategoryRepository.findById( (long) receivedProduct.getCategory().getId() ).get() );
+            }else {
+                product.setCategory( productCategoryRepository.findByCategoryName( receivedProduct.getCategory().getCategoryName() ) );
+            }
         }
     }
 
