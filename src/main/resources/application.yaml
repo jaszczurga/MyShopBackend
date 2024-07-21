@@ -23,7 +23,7 @@ allowed:
 
 stripe:
   key:
-    secret: put your stripe secret key here
+    secret: stripe-secret-key
 
 management:
   endpoints:

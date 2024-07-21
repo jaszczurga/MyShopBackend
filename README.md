@@ -773,7 +773,7 @@ This endpoint allows you to make a purchase by providing customer details, addre
 
 * ***Description***
 
-Retrieving paymetn intent from Stripe API
+Retrieving payment intent from Stripe API in order to manage payment process
 
 * **Request Body**
 ```json
@@ -786,7 +786,103 @@ Retrieving paymetn intent from Stripe API
 * **Success Response**
     * **Code:200**
       <br>
-      response body from Stripe API
+```json
+{
+  "amount": 40000,
+  "amount_capturable": 0,
+  "amount_details": {
+    "tip": {
+      "amount": null
+    }
+  },
+  "amount_received": 0,
+  "application": null,
+  "application_fee_amount": null,
+  "automatic_payment_methods": null,
+  "canceled_at": null,
+  "cancellation_reason": null,
+  "capture_method": "automatic",
+  "client_secret": "pi_ID_secret_SECRET",
+  "confirmation_method": "automatic",
+  "created": 1721584699,
+  "currency": "pln",
+  "customer": null,
+  "description": "zakupkiii",
+  "id": "pi_ID",
+  "invoice": null,
+  "last_payment_error": null,
+  "latest_charge": null,
+  "livemode": false,
+  "metadata": {},
+  "next_action": null,
+  "object": "payment_intent",
+  "on_behalf_of": null,
+  "payment_method": null,
+  "payment_method_configuration_details": null,
+  "payment_method_options": {
+    "acss_debit": null,
+    "affirm": null,
+    "afterpay_clearpay": null,
+    "alipay": null,
+    "au_becs_debit": null,
+    "bacs_debit": null,
+    "bancontact": null,
+    "blik": null,
+    "boleto": null,
+    "card": {
+      "capture_method": null,
+      "installments": null,
+      "mandate_options": null,
+      "network": null,
+      "request_extended_authorization": null,
+      "request_incremental_authorization": null,
+      "request_multicapture": null,
+      "request_overcapture": null,
+      "request_three_d_secure": "automatic",
+      "setup_future_usage": null,
+      "statement_descriptor_suffix_kana": null,
+      "statement_descriptor_suffix_kanji": null
+    },
+    "card_present": null,
+    "cashapp": null,
+    "customer_balance": null,
+    "eps": null,
+    "fpx": null,
+    "giropay": null,
+    "grabpay": null,
+    "ideal": null,
+    "interac_present": null,
+    "klarna": null,
+    "konbini": null,
+    "link": null,
+    "oxxo": null,
+    "p24": null,
+    "paynow": null,
+    "paypal": null,
+    "pix": null,
+    "promptpay": null,
+    "sepa_debit": null,
+    "sofort": null,
+    "us_bank_account": null,
+    "wechat_pay": null,
+    "zip": null
+  },
+  "payment_method_types": [
+    "card"
+  ],
+  "processing": null,
+  "receipt_email": "miraclehammes@gmail.com",
+  "review": null,
+  "setup_future_usage": null,
+  "shipping": null,
+  "source": null,
+  "statement_descriptor": null,
+  "statement_descriptor_suffix": null,
+  "status": "requires_payment_method",
+  "transfer_data": null,
+  "transfer_group": null
+}
+``` 
 ___________________________________________________________
 
 # AuthentucationController
